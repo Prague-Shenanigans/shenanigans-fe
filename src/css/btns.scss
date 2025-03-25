@@ -1,0 +1,75 @@
+@use 'src/css/colors.variables' as colors;
+
+@mixin button-styles($color) {
+  background-color: $color !important;
+
+  &:hover {
+    background-color: lighten($color, 5%) !important;
+  }
+  &:active {
+    background-color: lighten($color, 10%) !important;
+  }
+  &:disabled {
+    background-color: lighten($color, 15%) !important;
+    cursor: not-allowed;
+  }
+}
+
+.button {
+  border: none;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &--primary {
+    @include button-styles(colors.$bg-primary);
+  }
+
+  &--secondary {
+    background-color: white !important;
+    color: colors.$txt-blue;
+
+    &:hover {
+      background-color: #f0f0f0 !important; // Slightly gray color for hover
+    }
+    &:active {
+      background-color: #e0e0e0 !important; // Slightly darker gray color for active
+    }
+    &:disabled {
+      background-color: #f5f5f5 !important; // Light gray color for disabled
+      cursor: not-allowed;
+    }
+  }
+
+  &--txt-blue {
+    @include button-styles(colors.$txt-blue);
+  }
+
+  &--txt-yellow {
+    @include button-styles(colors.$txt-yellow);
+  }
+
+  &--txt-orange {
+    @include button-styles(colors.$txt-orange);
+  }
+
+  &--txt-green {
+    @include button-styles(colors.$txt-green);
+  }
+
+  &--txt-pink {
+    @include button-styles(colors.$txt-pink);
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--space-between {
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "edriver-app",
+  "version": "0.0.1",
+  "description": "Edriver Application",
+  "author": "Ivan Sedakov <isedakov@hopiholding.eu>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0"
+  }
+}

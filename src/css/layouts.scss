@@ -1,0 +1,60 @@
+@use 'src/css/colors.variables' as colors;
+
+.main-layout {
+  background-color: colors.$bg-layout;
+  padding: 22px 23px;
+  &__header {
+    background-color: colors.$bg-layout-item;
+    color: #000000;
+    padding: 8px 23px;
+    padding-top: env(safe-area-inset-top);
+    &__title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+  }
+  &__subheader {
+    background-color: colors.$bg-layout-item;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    position: relative;
+    &__title {
+      font-size: 22px;
+      font-weight: normal;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+  }
+  &__menu {
+    background-color: colors.$bg-layout-item;
+    color: #000000;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  &__info-title {
+    font-size: 12px;
+    color: gray;
+    margin-bottom: 3px;
+    font-weight: 400;
+  }
+  &__info {
+    font-size: 12px;
+    color: rgb(0, 0, 0);
+    margin-bottom: 3px;
+    font-weight: 400;
+  }
+}
+
+/* Media Query for Desktop Devices */
+@media (min-width: 1025px) {
+  .main-layout {
+    &__header {
+      padding-top: 8px; /* Static padding for desktop */
+    }
+    &__menu {
+      padding-bottom: 0; /* Static padding for desktop */
+    }
+  }
+}

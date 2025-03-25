@@ -1,0 +1,65 @@
+//Backgrounds
+$bg-layout-item: #ededed;
+$bg-layout: #c2c8c4;
+$bg-card-secondary: #e7e7e7;
+$bg-app-puvodni: #efefea; // 0 App Background - puvodni
+$bg-image: #fffef9; // 1 Image Background
+$bg-image-darker: #dce5cf; // 2 Image Background Darker
+
+//Basic
+$white: #ffffff;
+$black: #000000;
+
+//Error
+$error-500: #ff002e; // 1 Error 500
+$error-400: #ff6682; // 2 Error 400
+$error-300: #ffa3b4; // 3 Error 300
+$error-200: #ffc8d2; // 4 Error 200
+$error-100: #ffdee4; // 5 Error 100
+$error-50: #fff2f4; // 6 Error 50
+
+//Grey
+$grey-500: #454646; // 1 Grey 500
+$grey-400: #8f9090; // 2 Grey 400
+$grey-300: #bcbcbc; // 3 Grey 300
+$grey-200: #d7d7d7; // 4 Grey 200
+$grey-100: #e7e7e7; // 5 Grey 100
+$grey-50: #f5f5f5; // 6 Grey 50
+
+//Helpers
+$blue-basic: #0a84ff; // 1 Basic Blue
+$blue-light: #a8d3ff; // 2 Basic Blue Light
+$yellow-note-darker: #ecac15; // 3 Yellow Note Darker
+$yellow-note: #fec02d; // 4 Yellow Note
+$yellow-note-lighter: #fcf4e0; // 5 Yellow Note Lighter
+
+//Primary
+$primary-700: #1e4933; // 0 Primary 700
+$primary-500: #00792c; // 1 Primary 500
+$primary-400: #67af80; // 2 Primary 400
+$primary-300: #99c9ab; // 3 Primary 300
+$primary-200: #cce4d5; // 4 Primary 200
+$primary-100: #f5faf7; // 5 Primary 100
+$primary-50: #f9fcfb; // 6 Primary 50
+
+//Warning
+$warning-500: #ff5b00; // 1 Warning 500
+$warning-400: #ff9d67; // 2 Warning 400
+$warning-300: #ffc4a3; // 3 Warning 300
+$warning-200: #ffdbc8; // 4 Warning 200
+$warning-100: #ffeade; // 5 Warning 100
+$warning-50: #fff6f2; // 6 Warning 50
+
+// Eliminate the following colors in the project with the ones above.
+$bg-primary: #1e4933;
+$bg-error-soft: #ff6682;
+$bg-light-blue: #bfdaf1;
+$txt-blue: #1689fc;
+$bg-light-yellow: #f0e5c6;
+$txt-yellow: #ecaf1e;
+$bg-light-orange: #f1d1be;
+$txt-orange: #fc6310;
+$bg-light-green: #cddcd2;
+$txt-green: #128337;
+$bg-light-pink: #eccdd3;
+$txt-pink: #fc6484;

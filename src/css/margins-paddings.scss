@@ -1,0 +1,44 @@
+@mixin margin($side, $size) {
+  .margin--#{$side}-#{$size} {
+    margin-#{$side}: #{$size}px !important;
+  }
+}
+
+@mixin padding($side, $size) {
+  .padding--#{$side}-#{$size} {
+    padding-#{$side}: #{$size}px !important;
+  }
+}
+
+@for $size from 0 through 25 {
+  .margin--#{$size} {
+    margin: #{$size}px !important;
+  }
+  .margin--top-#{$size} {
+    margin-top: #{$size}px !important;
+  }
+  .margin--right-#{$size} {
+    margin-right: #{$size}px !important;
+  }
+  .margin--bottom-#{$size} {
+    margin-bottom: #{$size}px !important;
+  }
+  .margin--left-#{$size} {
+    margin-left: #{$size}px !important;
+  }
+  .padding--#{$size} {
+    padding: #{$size}px !important;
+  }
+  .padding--top-#{$size} {
+    padding-top: #{$size}px !important;
+  }
+  .padding--right-#{$size} {
+    padding-right: #{$size}px !important;
+  }
+  .padding--bottom-#{$size} {
+    padding-bottom: #{$size}px !important;
+  }
+  .padding--left-#{$size} {
+    padding-left: #{$size}px !important;
+  }
+}
