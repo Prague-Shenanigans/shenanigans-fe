@@ -3,3 +3,4 @@ node_modules
 .quasar
 src-capacitor/ios
 src-capacitor/android
+dist
