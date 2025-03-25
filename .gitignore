@@ -1,0 +1,5 @@
+node_modules
+.env
+.quasar
+src-capacitor/ios
+src-capacitor/android

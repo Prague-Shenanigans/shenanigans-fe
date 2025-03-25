@@ -6,5 +6,12 @@
     "strictNullChecks": false,
     "skipLibCheck": true
   },
-  "exclude": ["./dist", "./.quasar", "./node_modules", "./src-capacitor", "./src-cordova", "./quasar.config.*.temporary.compiled*"]
+  "exclude": [
+    "./dist",
+    "./.quasar",
+    "./node_modules",
+    "./src-capacitor",
+    "./src-cordova",
+    "./quasar.config.*.temporary.compiled*"
+  ]
 }

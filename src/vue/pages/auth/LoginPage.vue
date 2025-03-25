@@ -27,7 +27,7 @@
   </q-page>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -36,12 +36,13 @@ import { useAuthStore } from 'src/stores/auth.store'; // ✅ Pinia store for aut
 
 const email = ref('');
 const password = ref('');
+const showPassword = ref(false);
 const loading = ref(false);
-const errorX = ref(null);
+const errorX = ref<string | null>(null);
+
 const router = useRouter();
 const $q = useQuasar();
-const authStore = useAuthStore(); // ✅ Use Pinia store for authentication
-const showPassword = ref(false);
+const authStore = useAuthStore();
 
 const login = async () => {
   errorX.value = null;
@@ -55,17 +56,19 @@ const login = async () => {
 
     const { access, refresh } = response.data;
 
-    // ✅ Store tokens in Pinia
     authStore.setTokens(access, refresh);
+
+    await authStore.me(); // ✅ fetch and set user before routing
 
     $q.notify({
       type: 'positive',
       message: 'Login successful!',
       timeout: 2000,
     });
-
-    router.push('/home'); // ✅ Redirect after login
+    console.log('HOME :>> ', response);
+    router.push('/home'); // ✅ redirect after user is set
   } catch (error) {
+    console.error(error);
     errorX.value = 'Invalid credentials!';
   } finally {
     loading.value = false;

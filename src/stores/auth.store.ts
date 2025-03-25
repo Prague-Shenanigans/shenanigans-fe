@@ -6,13 +6,14 @@ import { LocalStorage } from 'quasar';
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter();
+
   const accessToken = ref<string | null>(LocalStorage.getItem('accessToken') || null);
   const refreshToken = ref<string | null>(LocalStorage.getItem('refreshToken') || null);
-  const user = ref<any>(null); // Replace `any` with an actual user type when known
+  const user = ref<any>(null); // You can type this if you know your user shape
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // ✅ Set tokens after login
+  // ✅ Store tokens and persist them
   const setTokens = (access: string, refresh: string) => {
     accessToken.value = access;
     refreshToken.value = refresh;
@@ -20,35 +21,43 @@ export const useAuthStore = defineStore('auth', () => {
     LocalStorage.set('refreshToken', refresh);
   };
 
-  // ✅ Remove tokens on logout
+  // ✅ Logout: clear everything
   const logout = () => {
     accessToken.value = null;
     refreshToken.value = null;
     user.value = null;
     LocalStorage.remove('accessToken');
     LocalStorage.remove('refreshToken');
-    router.push('/login');
+    router.push('/auth/login');
   };
 
-  // ✅ Check if the user is authenticated
+  // ✅ Are we authenticated?
   const isAuthenticated = () => !!accessToken.value;
 
-  // ✅ Fetch user profile
+  // ✅ Fetch user info (use correct domain!)
   const fetchUser = async () => {
     if (!accessToken.value) return;
+
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/auth/user/', {
-        headers: { Authorization: `Bearer ${accessToken.value}` },
+      const response = await axios.get('https://she-be.nonode.dev/api/auth/user/', {
+        headers: {
+          Authorization: `Bearer ${accessToken.value}`,
+        },
       });
       user.value = response.data;
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch user:', err);
-      logout();
+      // Optional: only logout on 401/403
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        logout();
+      }
     }
   };
 
-  // ✅ Alias `fetchUser()` as `me()` to match `router/index.ts`
-  const me = async () => fetchUser();
+  // ✅ Expose as `me()` so it can be used externally
+  const me = async () => {
+    await fetchUser();
+  };
 
   return {
     accessToken,
@@ -60,6 +69,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     isAuthenticated,
     fetchUser,
-    me, // ✅ Now `authStore.me()` exists
+    me,
   };
 });
