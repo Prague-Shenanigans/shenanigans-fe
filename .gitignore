@@ -1,6 +1,29 @@
+# Node dependencies
 node_modules
-.env
+
+# Quasar build output
 .quasar
-src-capacitor/ios
-src-capacitor/android
-dist
+dist/
+dist-ssr/
+dist-spa/
+dist-pwa/
+dist-bex/
+dist-cordova/
+dist-capacitor/
+
+# Capacitor native platforms
+src-capacitor/android/
+src-capacitor/ios/
+src-capacitor/www/
+
+# Environment files
+.env
+.env.*    # if you use multiple env files
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE/editor configs (optional)
+.vscode/
+.idea/
