@@ -1,5 +1,5 @@
 <template>
-  <div>HomePage</div>
+  <div>HomePage Hiii gggggg df kjadb kfdsjb</div>
 </template>
 
 <script setup></script>
