@@ -1,7 +1,7 @@
 <template>
-  <div>HomePage Hiii gggggg df kjadb kfdsjb</div>
+  <MainMap />
 </template>
 
-<script setup></script>
-
-<style lang="scss" scoped></style>
+<script setup lang="ts">
+import MainMap from '../components/MainMap.vue';
+</script>
