@@ -193,7 +193,7 @@ module.exports = configure((/* ctx */) => ({
 
   // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
   capacitor: {
-    appId: 'com.hopi.eDriver',
+    appId: 'com.pavel.pragueshenanigans',
     hideSplashscreen: true,
   },
 
@@ -220,7 +220,7 @@ module.exports = configure((/* ctx */) => ({
     builder: {
       // https://www.electron.build/configuration/configuration
 
-      appId: 'edriver-app',
+      appId: 'prague-shenanigans',
     },
   },
 

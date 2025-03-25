@@ -1,10 +1,11 @@
 {
-  "name": "edriver-app",
+  "name": "prague-shenanigans",
   "version": "0.0.1",
-  "description": "Edriver Application",
-  "author": "Ivan Sedakov <isedakov@hopiholding.eu>",
+  "description": "Prague Shenanigans Application",
+  "author": "Marian Adamus <adamus.marian@email.cz>",
   "private": true,
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.0",
     "@capacitor/cli": "^6.0.0",
     "@capacitor/core": "^6.0.0",

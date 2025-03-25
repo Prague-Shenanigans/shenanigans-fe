@@ -1,9 +1,9 @@
 {
-  "name": "edriver-app",
+  "name": "prague-shenanigans",
   "version": "0.0.1",
-  "description": "Edriver Application",
-  "productName": "EDriver App",
-  "author": "Ivan Sedakov <isedakov@hopiholding.eu>",
+  "description": "Prague Shenanigans Application",
+  "productName": "Prague Shenanigans",
+  "author": "Marian Adamus <adamus.marian@email.cz>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",

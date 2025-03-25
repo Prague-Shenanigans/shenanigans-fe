@@ -1,34 +1,46 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="main-layout">
-    <q-header id="layout-header" class="main-layout__header" />
-    <q-footer elevated class="main-layout__menu">
-      <q-tabs v-model="tab" class="text-grey-8" indicator-color="transparent" active-color="teal-9">
-        <q-route-tab icon="task" :to="{ name: routeNames.home }">
-          <q-badge v-if="importantNotices > 0" color="red" floating>{{ importantNotices }}</q-badge>
-        </q-route-tab>
-        <q-route-tab :name="routeNames.trip" icon="local_shipping" indicator-color="transparent" :to="{ name: routeNames.trip }" />
-        <q-route-tab :name="routeNames.chat" icon="chat_bubble" :to="{ name: routeNames.chat }">
-          <q-badge v-if="importantNotices > 0" color="red" floating>{{ importantNotices }}</q-badge>
-        </q-route-tab>
-        <q-route-tab :name="routeNames.settings" icon="settings" indicator-color="transparent" :to="{ name: routeNames.settings }" />
-      </q-tabs>
-    </q-footer>
-    <q-page-container v-if="isLoading">
+  <q-layout view="lHh Lpr lFf">
+    <!-- ===================== HEADER ===================== -->
+    <q-header elevated>
+      <q-toolbar>
+        <q-btn flat dense round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
+        <q-toolbar-title>My App</q-toolbar-title>
+        <q-btn flat dense icon="logout" @click="logout" />
+      </q-toolbar>
+    </q-header>
+
+    <!-- ===================== DRAWER ===================== -->
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+      <q-list>
+        <q-item v-ripple to="/home" clickable>
+          <q-item-section avatar><q-icon name="home" /></q-item-section>
+          <q-item-section>Home</q-item-section>
+        </q-item>
+
+        <q-item v-ripple to="/settings" clickable>
+          <q-item-section avatar><q-icon name="settings" /></q-item-section>
+          <q-item-section>Settings</q-item-section>
+        </q-item>
+      </q-list>
+    </q-drawer>
+
+    <!-- ===================== PAGE CONTAINER ===================== -->
+    <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { routeNames } from 'src/router/routes';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/stores/auth.store';
 
-const tab = ref(null);
-const isLoading = ref(false);
+const leftDrawerOpen = ref(false);
+const router = useRouter();
+const authStore = useAuthStore();
 
-const importantNotices = computed(() => 0);
-
-onMounted(() => {
-  isLoading.value = true;
-});
+const logout = () => {
+  authStore.logout();
+};
 </script>
