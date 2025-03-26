@@ -103,7 +103,8 @@ module.exports = configure((/* ctx */) => ({
 
   // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
   devServer: {
-    port: 9012,
+    host: '192.168.1.115',
+    port: ctx.mode.capacitor ? 9020 : 9012,
     open: false,
     proxy: {
       '/api': {
