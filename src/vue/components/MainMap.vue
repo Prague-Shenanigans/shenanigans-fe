@@ -16,7 +16,6 @@
 // ===================== IMPORTS =====================
 import { onMounted, ref } from 'vue';
 import L from 'leaflet';
-// @ts-ignore
 import 'leaflet-providers';
 import { tileProviders } from '../../maps/tiles/tileProviders.js';
 
@@ -34,7 +33,6 @@ function updateTileLayer() {
     map.value.removeLayer(tileLayer.value);
   }
 
-  // @ts-ignore
   tileLayer.value = L.tileLayer.provider(selectedProvider.value);
   tileLayer.value.addTo(map.value);
 }
