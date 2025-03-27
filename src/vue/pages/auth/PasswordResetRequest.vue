@@ -12,7 +12,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
+import { useAuthApi } from 'src/api/auth.api';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
+const authApi = useAuthApi();
 
 const email = ref('');
 const success = ref('');
@@ -20,12 +24,20 @@ const error = ref('');
 
 const submitEmail = async () => {
   try {
-    await axios.post('https://she-be.nonode.dev/api/auth/password/reset/', { email: email.value });
+    await authApi.requestPasswordReset(email.value);
     success.value = 'Check your email for the password reset link.';
     error.value = '';
+    $q.notify({
+      type: 'positive',
+      message: 'Check your email for the password reset link.',
+    });
   } catch (err) {
     error.value = 'Error sending email. Please try again.';
     success.value = '';
+    $q.notify({
+      type: 'negative',
+      message: 'Error sending email. Please try again.',
+    });
   }
 };
 </script>
