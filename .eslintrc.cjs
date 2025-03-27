@@ -13,7 +13,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/vue3-recommended', // ✅ More strict than "vue3-essential"
     'airbnb-base',
-    'prettier' // ✅ Ensure Prettier and ESLint don’t conflict
+    'prettier' // ✅ Ensure Prettier and ESLint don't conflict
   ],
 
   plugins: ['@typescript-eslint', 'vue'],
@@ -47,6 +47,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'no-unused-vars': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     'vue/attributes-order': [
       'error',
