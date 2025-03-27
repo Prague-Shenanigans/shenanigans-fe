@@ -55,7 +55,6 @@ module.exports = configure((ctx) => ({
   },
 
   devServer: {
-    host: '192.168.1.115',
     port: ctx.mode.capacitor ? 9020 : 9012,
     open: false,
     proxy: {
