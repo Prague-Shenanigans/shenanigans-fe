@@ -25,7 +25,7 @@ module.exports = {
     'no-nested-ternary': 'off',
     'max-classes-per-file': 'off',
     'comma-dangle': 'warn',
-    'semi': ['warn', 'always'], // ✅ Ensure semicolons
+    'semi': ['warn', 'always'],
     'linebreak-style': 0,
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
@@ -41,13 +41,13 @@ module.exports = {
 
     'prefer-promise-reject-errors': 'off',
 
-    'quotes': ['warn', 'single', { avoidEscape: true }], // ✅ Enforce single quotes
+    'quotes': ['warn', 'single', { avoidEscape: true }],
 
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     'no-unused-vars': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': 'off',
 
     'vue/attributes-order': [
       'error',
@@ -69,4 +69,6 @@ module.exports = {
       },
     ],
   },
+
+  ignorePatterns: ['**/www/**', '**/public/**', 'dist/', 'node_modules/'],
 };

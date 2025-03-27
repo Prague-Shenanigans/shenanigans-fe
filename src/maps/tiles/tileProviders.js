@@ -1,13 +1,8 @@
 export const tileProviders = {
-  watercolor: {
-    name: 'Stadia.StamenWatercolor',
-    label: 'Watercolor',
-    description: 'Painted watercolor look',
-  },
-  toner: {
-    name: 'Stadia.StamenToner',
-    label: 'Toner',
-    description: 'High-contrast black/white',
+  osm: {
+    name: 'OpenStreetMap',
+    label: 'OpenStreetMap',
+    description: 'Standard street map',
   },
   physical: {
     name: 'Esri.WorldPhysical',
@@ -23,5 +18,10 @@ export const tileProviders = {
     name: 'OpenTopoMap',
     label: 'Topo Map',
     description: 'Topographic hiking style',
+  },
+  satellite: {
+    name: 'Esri.WorldImagery',
+    label: 'Satellite',
+    description: 'Satellite imagery',
   },
 };

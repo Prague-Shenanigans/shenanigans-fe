@@ -6,7 +6,8 @@
   "author": "Marian Adamus <adamus.marian@email.cz>",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
+    "lint": "eslint --ext .js,.ts,.vue src",
+    "type-check": "vue-tsc --project tsconfig.vue-tsc.json --noEmit",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "dev:and": "quasar dev -m capacitor -T android",

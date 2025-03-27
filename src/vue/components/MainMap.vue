@@ -23,7 +23,7 @@ import { tileProviders } from '../../maps/tiles/tileProviders.js';
 const mapRef = ref(null);
 const map = ref(null);
 const tileLayer = ref(null);
-const selectedProvider = ref(tileProviders.watercolor.name);
+const selectedProvider = ref(tileProviders.osm.name);
 
 // ===================== METHODS =====================
 function updateTileLayer() {
@@ -33,14 +33,15 @@ function updateTileLayer() {
     map.value.removeLayer(tileLayer.value);
   }
 
-  tileLayer.value = L.tileLayer.provider(selectedProvider.value);
+  const providerName = selectedProvider.value;
+  tileLayer.value = L.tileLayer.provider(providerName);
   tileLayer.value.addTo(map.value);
 }
 
 // ===================== LIFECYCLE HOOKS =====================
 onMounted(() => {
   if (mapRef.value) {
-    map.value = L.map(mapRef.value).setView([51.505, -0.09], 13);
+    map.value = L.map(mapRef.value).setView([50.0755, 14.4378], 13);
     updateTileLayer();
   }
 });

@@ -5,3 +5,7 @@
 /node_modules
 .eslintrc.cjs
 /quasar.config.*.temporary.compiled*
+dist/
+src-capacitor/www/
+src-capacitor/android/**
+src-capacitor/ios/**

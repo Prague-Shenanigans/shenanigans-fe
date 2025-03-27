@@ -1,6 +1,17 @@
 {
   "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "src-capacitor"],
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "preserve",
+    "allowJs": true,
+    "checkJs": false,
+    "lib": ["dom", "esnext"],
+    "types": ["vite/client"]
   }
 }

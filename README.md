@@ -1,9 +1,14 @@
 after you clone repo:
 npm i
+quasar build
 
-when you want to start locally:
+run locally:
 quasar dev
 
-when you want to open in android studio:
-(if you have problem with cashing run: rm -rf node_modules/.q-cache)
+Android:
+quasar build -m capacitor -T android (only first time needed)
 quasar dev -m capacitor -T android
+
+iOS:
+quasar build -m capacitor -T ios (only first time needed)
+quasar dev -m capacitor -T ios
