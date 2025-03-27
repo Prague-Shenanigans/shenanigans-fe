@@ -118,6 +118,7 @@ const confirmDelete = () => {
       await deleteAccount();
       $q.notify({ type: 'positive', message: 'Account deleted' });
       authStore.logout();
+      router.push('/auth/login');
     } catch (err) {
       $q.notify({ type: 'negative', message: err.message });
     }

@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ===================== IMPORTS =====================
 import { onMounted, ref } from 'vue';
 import L from 'leaflet';
