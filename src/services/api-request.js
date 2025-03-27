@@ -1,8 +1,9 @@
+// src/services/api-request.js
 import axios from 'axios';
-import { LocalStorage } from 'quasar';
+import { LocalStorage, Loading, Dialog, Notify } from 'quasar';
 
 const instance = axios.create({
-  baseURL: 'https://she-be.nonode.dev/api',
+  baseURL: import.meta.env.VITE_SERVER_DOMAIN,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -13,16 +14,23 @@ instance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  Loading.show({ message: 'Loading...' }); // show loading indicator
   return config;
 });
 
 instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    Loading.hide(); // hide on success
+    return response;
+  },
   (error) => {
+    Loading.hide(); // always hide on error
     let errorMessage = 'An unknown error occurred. Please try again.';
 
     if (axios.isAxiosError(error)) {
       const { status, data } = error.response ?? {};
+
       if (status) {
         if (status >= 300 && status < 400) {
           errorMessage = 'Redirection error. Please try again.';
@@ -39,6 +47,18 @@ instance.interceptors.response.use(
     } else if (error instanceof Error) {
       errorMessage = error.message;
     }
+
+    Dialog.create({
+      title: 'Error',
+      message: errorMessage,
+      ok: { label: 'OK', color: 'primary' },
+    });
+
+    Notify.create({
+      type: 'negative',
+      message: errorMessage,
+      position: 'top',
+    });
 
     console.error('API Error:', errorMessage);
     return Promise.reject(new Error(errorMessage));
