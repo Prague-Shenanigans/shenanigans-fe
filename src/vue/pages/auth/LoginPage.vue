@@ -30,9 +30,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 import { useQuasar } from 'quasar';
-import { useAuthStore } from 'src/stores/auth.store'; // ✅ Pinia store for auth
+import { useAuthStore } from 'src/stores/auth.store';
+import { useAuthApi } from 'src/api/auth.api';
 
 const email = ref('');
 const password = ref('');
@@ -43,30 +43,29 @@ const errorX = ref<string | null>(null);
 const router = useRouter();
 const $q = useQuasar();
 const authStore = useAuthStore();
+const authApi = useAuthApi();
 
 const login = async () => {
   errorX.value = null;
   loading.value = true;
 
   try {
-    const response = await axios.post('https://she-be.nonode.dev/api/auth/login/', {
+    const response = await authApi.login({
       email: email.value,
       password: password.value,
     });
 
-    const { access, refresh } = response.data;
+    const { access, refresh } = response;
 
     authStore.setTokens(access, refresh);
-
-    await authStore.me(); // ✅ fetch and set user before routing
+    await authStore.me();
 
     $q.notify({
       type: 'positive',
       message: 'Login successful!',
       timeout: 2000,
     });
-    console.log('HOME :>> ', response);
-    router.push('/home'); // ✅ redirect after user is set
+    router.push('/home');
   } catch (error) {
     console.error(error);
     errorX.value = 'Invalid credentials!';
