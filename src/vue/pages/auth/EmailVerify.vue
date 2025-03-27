@@ -9,11 +9,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
+import { useAuthApi } from 'src/api/auth.api';
+import { useQuasar } from 'quasar';
 
 const route = useRoute();
 const router = useRouter();
+const $q = useQuasar();
+const authApi = useAuthApi();
+
 const loading = ref(true);
 const error = ref(null);
 const success = ref(false);
@@ -28,11 +32,19 @@ onMounted(async () => {
   }
 
   try {
-    await axios.post('https://she-be.nonode.dev/api/auth/registration/verify-email/', { key });
+    await authApi.verifyEmail(key);
     success.value = true;
-    setTimeout(() => router.push('/login'), 3000);
+    $q.notify({
+      type: 'positive',
+      message: 'Your email has been verified! You can now log in.',
+    });
+    setTimeout(() => router.push('/auth/login'), 3000);
   } catch (err) {
     error.value = 'Verification failed. Link might be invalid or expired.';
+    $q.notify({
+      type: 'negative',
+      message: 'Verification failed. Link might be invalid or expired.',
+    });
     setTimeout(() => router.push('/'), 3000);
   } finally {
     loading.value = false;
