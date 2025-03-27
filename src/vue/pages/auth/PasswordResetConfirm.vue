@@ -14,10 +14,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import { useAuthApi } from 'src/api/auth.api';
+import { useQuasar } from 'quasar';
 
 const route = useRoute();
 const router = useRouter();
+const $q = useQuasar();
+const authApi = useAuthApi();
 
 const uid = ref('');
 const token = ref('');
@@ -34,20 +37,27 @@ onMounted(() => {
 const submitPassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
     error.value = 'Passwords do not match.';
+    $q.notify({
+      type: 'warning',
+      message: 'Passwords do not match.',
+    });
     return;
   }
 
   try {
-    await axios.post('https://she-be.nonode.dev/api/auth/password/reset/confirm/', {
-      uid: uid.value,
-      token: token.value,
-      new_password1: newPassword.value,
-      new_password2: confirmPassword.value,
-    });
+    await authApi.resetPassword(token.value, newPassword.value);
     success.value = 'Password successfully reset. Redirecting to login...';
+    $q.notify({
+      type: 'positive',
+      message: 'Password successfully reset.',
+    });
     setTimeout(() => router.push('/auth/login'), 3000);
   } catch (err) {
     error.value = 'Failed to reset password. Link might be invalid or expired.';
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to reset password. Link might be invalid or expired.',
+    });
   }
 };
 </script>
