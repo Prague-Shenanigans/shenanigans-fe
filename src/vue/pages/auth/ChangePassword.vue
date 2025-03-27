@@ -14,7 +14,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
+import { useAuthApi } from 'src/api/auth.api';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
+const authApi = useAuthApi();
 
 const currentPassword = ref('');
 const newPassword = ref('');
@@ -29,22 +33,22 @@ const changePassword = async () => {
   }
 
   try {
-    await axios.post(
-      'http://127.0.0.1:8000/api/auth/password/change/',
-      {
-        old_password: currentPassword.value,
-        new_password1: newPassword.value,
-        new_password2: confirmPassword.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`, // Make sure user is authenticated
-        },
-      },
-    );
+    await authApi.changePassword({
+      old_password: currentPassword.value,
+      new_password1: newPassword.value,
+      new_password2: confirmPassword.value,
+    });
     success.value = 'Password successfully changed.';
+    $q.notify({
+      type: 'positive',
+      message: 'Password successfully changed.',
+    });
   } catch (err) {
     error.value = 'Failed to change password. Make sure your current password is correct.';
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to change password. Make sure your current password is correct.',
+    });
   }
 };
 </script>
