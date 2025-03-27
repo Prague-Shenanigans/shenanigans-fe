@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
+import { useAuthApi } from 'src/api/auth.api';
 
 const email = ref('');
 const password1 = ref('');
@@ -47,6 +47,8 @@ const successMessage = ref(null);
 const errorMessage = ref(null);
 const errors = ref({});
 
+const authApi = useAuthApi();
+
 const register = async () => {
   loading.value = true;
   successMessage.value = null;
@@ -54,14 +56,12 @@ const register = async () => {
   errors.value = {};
 
   try {
-    const response = await axios.post('https://she-be.nonode.dev/api/auth/registration/', {
+    await authApi.register({
       email: email.value,
-      username: email.value, // ✅ Ensure username is set to email
+      username: email.value,
       password1: password1.value,
       password2: password2.value,
     });
-
-    console.log('Registration Response:', response);
 
     successMessage.value = 'Registration successful! Check your email for verification.';
     email.value = '';
