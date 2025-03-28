@@ -26,80 +26,174 @@
   &:hover::before {
     transform: scale(1.2);
     box-shadow: $shadow-hover;
+    animation-play-state: paused;
   }
 
   &:active::before {
     transform: scale(0.9);
+    animation: none;
   }
 }
 
 // POI Icon Colors and Icons
 .poi-icon {
   &.landmark::before {
-    background-color: $color-landmark;
+    background-color: map-get($poi-colors, 'landmark');
     background-image: url('/icons/landmark.svg');
-    animation: pulse 2s infinite;
+    animation: pulse-landmark 2s infinite;
   }
 
   &.bridge::before {
-    background-color: $color-bridge;
+    background-color: map-get($poi-colors, 'bridge');
     background-image: url('/icons/bridge.svg');
+    animation: pulse-bridge 2s infinite;
   }
 
   &.club::before {
-    background-color: $color-club;
+    background-color: map-get($poi-colors, 'club');
     background-image: url('/icons/club.svg');
-    animation: rotate 4s infinite linear;
+    animation: pulse-club 2s infinite;
   }
 
   &.museum::before {
-    background-color: $color-museum;
+    background-color: map-get($poi-colors, 'museum');
     background-image: url('/icons/museum.svg');
+    animation: pulse-museum 2s infinite;
   }
 
   &.park::before {
-    background-color: $color-park;
+    background-color: map-get($poi-colors, 'park');
     background-image: url('/icons/park.svg');
-    animation: float 3s infinite ease-in-out;
+    animation: pulse-park 2s infinite;
   }
 
   &.restaurant::before {
-    background-color: $color-restaurant;
+    background-color: map-get($poi-colors, 'restaurant');
     background-image: url('/icons/restaurant.svg');
+    animation: pulse-restaurant 2s infinite;
   }
 
   &.cafe::before {
-    background-color: $color-cafe;
+    background-color: map-get($poi-colors, 'cafe');
     background-image: url('/icons/cafe.svg');
-    animation: steam 2s infinite ease-in-out;
+    animation: pulse-cafe 2s infinite;
   }
 
   &.bar::before {
-    background-color: $color-bar;
+    background-color: map-get($poi-colors, 'bar');
     background-image: url('/icons/bar.svg');
-    animation: glow 2s infinite ease-in-out;
+    animation: pulse-bar 2s infinite;
+  }
+
+  // Default icons for other categories
+  &.hotel::before {
+    background-color: map-get($poi-colors, 'hotel');
+    background-image: url('/icons/hotel.svg');
+    animation: pulse-hotel 2s infinite;
+  }
+
+  &.shopping::before {
+    background-color: map-get($poi-colors, 'shopping');
+    background-image: url('/icons/shopping.svg');
+    animation: pulse-shopping 2s infinite;
+  }
+
+  &.transport::before {
+    background-color: map-get($poi-colors, 'transport');
+    background-image: url('/icons/transport.svg');
+    animation: pulse-transport 2s infinite;
   }
 }
 
-// Vintage Marker
+// Base marker styles
 .vintage-marker {
-  background: none;
-  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: $transition-default;
+  transform-origin: center bottom;
 
-  &-inner {
-    width: $marker-size;
-    height: $marker-size;
-    background: url('/icons/marker.svg') no-repeat center;
-    filter: sepia(100%) contrast(150%) brightness(80%);
+  &:hover {
+    transform: scale(1.2);
+    box-shadow: $shadow-hover;
+    animation-play-state: paused;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
     transition: $transition-default;
+  }
 
-    &:hover {
-      transform: scale(1.2);
-      filter: sepia(100%) contrast(150%) brightness(100%);
+  &:hover::after {
+    transform: translateX(-50%) scale(1.2);
+  }
+}
+
+// Category-specific marker styles
+@each $category, $color in $poi-colors {
+  .marker-#{$category} {
+    background: $color;
+    border: 2px solid $color-white;
+    animation: pulse-#{$category} 2s infinite;
+
+    &::after {
+      border-top-color: $color;
     }
 
-    &:active {
-      transform: scale(0.9);
+    .category-icon {
+      width: 24px;
+      height: 24px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: brightness(0) invert(1);
+      animation: pulse-#{$category} 2s infinite;
     }
+  }
+}
+
+// Category-specific pulse animations
+@each $category, $color in $poi-colors {
+  @keyframes pulse-#{$category} {
+    0% {
+      box-shadow: 0 0 0 0 rgba($color, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba($color, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba($color, 0);
+    }
+  }
+}
+
+// Hover effects
+.vintage-marker:hover {
+  .category-icon {
+    animation-play-state: paused;
+  }
+}
+
+// Active state
+.vintage-marker.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba($color-primary, 0.5);
+
+  .category-icon {
+    animation: none;
+    transform: scale(1.2);
   }
 }
