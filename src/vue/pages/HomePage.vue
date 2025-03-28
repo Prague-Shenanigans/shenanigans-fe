@@ -1,7 +1,7 @@
 <template>
-  <MainMap />
+  <CustomMap />
 </template>
 
 <script setup>
-import MainMap from '../components/MainMap.vue';
+import CustomMap from '../components/CustomMap.vue';
 </script>

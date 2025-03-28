@@ -1,0 +1,105 @@
+// Base icon styles
+.poi-icon {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: $icon-size !important;
+  height: $icon-size !important;
+  margin-left: -$icon-size/2 !important;
+  margin-top: -$icon-size/2 !important;
+  transition: $transition-default;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow($shadow-default);
+    border-radius: $border-radius-circle;
+    padding: $icon-padding;
+    display: block;
+  }
+
+  &:hover::before {
+    transform: scale(1.2);
+    box-shadow: $shadow-hover;
+  }
+
+  &:active::before {
+    transform: scale(0.9);
+  }
+}
+
+// POI Icon Colors and Icons
+.poi-icon {
+  &.landmark::before {
+    background-color: $color-landmark;
+    background-image: url('/icons/landmark.svg');
+    animation: pulse 2s infinite;
+  }
+
+  &.bridge::before {
+    background-color: $color-bridge;
+    background-image: url('/icons/bridge.svg');
+  }
+
+  &.club::before {
+    background-color: $color-club;
+    background-image: url('/icons/club.svg');
+    animation: rotate 4s infinite linear;
+  }
+
+  &.museum::before {
+    background-color: $color-museum;
+    background-image: url('/icons/museum.svg');
+  }
+
+  &.park::before {
+    background-color: $color-park;
+    background-image: url('/icons/park.svg');
+    animation: float 3s infinite ease-in-out;
+  }
+
+  &.restaurant::before {
+    background-color: $color-restaurant;
+    background-image: url('/icons/restaurant.svg');
+  }
+
+  &.cafe::before {
+    background-color: $color-cafe;
+    background-image: url('/icons/cafe.svg');
+    animation: steam 2s infinite ease-in-out;
+  }
+
+  &.bar::before {
+    background-color: $color-bar;
+    background-image: url('/icons/bar.svg');
+    animation: glow 2s infinite ease-in-out;
+  }
+}
+
+// Vintage Marker
+.vintage-marker {
+  background: none;
+  border: none;
+
+  &-inner {
+    width: $marker-size;
+    height: $marker-size;
+    background: url('/icons/marker.svg') no-repeat center;
+    filter: sepia(100%) contrast(150%) brightness(80%);
+    transition: $transition-default;
+
+    &:hover {
+      transform: scale(1.2);
+      filter: sepia(100%) contrast(150%) brightness(100%);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
