@@ -47,13 +47,18 @@
 // Map Container
 .map-wrapper {
   position: relative;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .map-container {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 
 // Map Controls
@@ -69,11 +74,14 @@
 }
 
 .control-group {
-  margin-bottom: 8px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
 // Info Panel
@@ -99,4 +107,18 @@
   background: rgba($color-background, 0.9);
   border-radius: 3px;
   text-align: center;
+}
+
+// Ensure Leaflet controls stay within bounds
+.leaflet-control-container {
+  .leaflet-control {
+    margin: 10px;
+  }
+}
+
+// Prevent map from overflowing
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }

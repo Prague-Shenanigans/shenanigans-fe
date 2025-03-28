@@ -2,40 +2,13 @@
   <div class="map-wrapper">
     <div ref="mapRef" class="map-container"></div>
 
-    <!-- Custom Controls -->
-    <div class="map-controls">
-      <!-- Style Selector -->
-      <div class="control-group">
-        <select v-model="selectedStyle" @change="updateMapStyle">
-          <option v-for="style in mapStyles" :key="style.name" :value="style.name">
-            {{ style.label }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Custom Overlay Controls -->
-      <div class="control-group">
-        <label> <input v-model="showPaperTexture" type="checkbox" /> Paper Texture </label>
-        <label> <input v-model="showGrid" type="checkbox" /> Grid Overlay </label>
-      </div>
-
-      <!-- POI Controls -->
-      <div class="control-group">
-        <label> <input v-model="showPOIs" type="checkbox" @change="handlePOIToggle" /> Show POIs </label>
-        <select v-if="showPOIs" v-model="selectedPOICategory" @change="updatePOIs">
-          <option value="all">All Categories</option>
-          <option v-for="category in poiCategories" :key="category" :value="category">
-            {{ category }}
-          </option>
-        </select>
-        <div v-if="poisStore.loading" class="loading-indicator">Loading POIs...</div>
-      </div>
-
-      <!-- Custom Marker Controls -->
-      <div class="control-group">
-        <button @click="addCustomMarker">Add Vintage Marker</button>
-        <button @click="clearMarkers">Clear Markers</button>
-      </div>
+    <!-- Style Selector -->
+    <div class="control-group">
+      <select v-model="selectedStyle" @change="updateMapStyle">
+        <option v-for="style in mapStyles" :key="style.name" :value="style.name">
+          {{ style.label }}
+        </option>
+      </select>
     </div>
 
     <!-- Custom Info Panel -->
@@ -104,28 +77,16 @@ const mapStyles = [
 const mapRef = ref(null);
 const map = ref(null);
 const tileLayer = ref(null);
-const overlayLayer = ref(null);
 const gridLayer = ref(null);
 const markers = ref([]);
 const poiMarkers = ref([]);
 const selectedMarker = ref(null);
 const selectedStyle = ref('vintage');
-const showPaperTexture = ref(true);
 const showGrid = ref(false);
-const showPOIs = ref(false);
-const selectedPOICategory = ref('all');
 let mapMoveTimeout = null;
 
 // Initialize POI Store
 const poisStore = usePoisStore();
-
-// Custom Vintage Icon
-const vintageIcon = L.divIcon({
-  className: 'vintage-marker',
-  html: '<div class="vintage-marker-inner"></div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 15],
-});
 
 // POI Icons
 const poiIcons = {
@@ -193,20 +154,11 @@ const poiIcons = {
 
 // Methods
 function updatePOIs() {
-  if (!map.value || !showPOIs.value) return;
+  if (!map.value) return;
 
   const bounds = map.value.getBounds();
   const zoom = map.value.getZoom();
   poisStore.loadPois(bounds, zoom);
-}
-
-function handlePOIToggle(newValue) {
-  if (newValue) {
-    updatePOIs();
-  } else {
-    poiMarkers.value.forEach((marker) => marker.remove());
-    poiMarkers.value = [];
-  }
 }
 
 function updateMapStyle() {
@@ -214,7 +166,6 @@ function updateMapStyle() {
 
   // Remove existing layers
   if (tileLayer.value) map.value.removeLayer(tileLayer.value);
-  if (overlayLayer.value) map.value.removeLayer(overlayLayer.value);
   if (gridLayer.value) map.value.removeLayer(gridLayer.value);
 
   // Get selected style
@@ -239,15 +190,6 @@ function updateMapStyle() {
     map.value.getContainer().classList.remove('vintage-map');
   }
 
-  // Add overlay if enabled
-  if (showPaperTexture.value) {
-    overlayLayer.value = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      opacity: 0.03,
-      className: 'paper-texture',
-    });
-    overlayLayer.value.addTo(map.value);
-  }
-
   // Add grid if enabled
   if (showGrid.value) {
     gridLayer.value = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -257,64 +199,44 @@ function updateMapStyle() {
     gridLayer.value.addTo(map.value);
   }
 
-  // Update POIs if enabled
-  if (showPOIs.value) {
-    updatePOIs();
-  }
-}
-
-function addCustomMarker() {
-  if (!map.value) return;
-
-  const center = map.value.getCenter();
-  const marker = L.marker([center.lat, center.lng], { icon: vintageIcon }).bindPopup('Vintage Location').addTo(map.value);
-
-  markers.value.push(marker);
-}
-
-function clearMarkers() {
-  markers.value.forEach((marker) => marker.remove());
-  markers.value = [];
+  // Update POIs
+  updatePOIs();
 }
 
 // Update the watch function for visible POIs
 watch(
   () => poisStore.visiblePois,
   (newPois) => {
-    console.log('Visible POIs:', newPois);
     // Clear existing POI markers
     poiMarkers.value.forEach((marker) => marker.remove());
     poiMarkers.value = [];
 
-    // Filter POIs based on selected category
-    const filteredPOIs = selectedPOICategory.value === 'all' ? newPois : newPois.filter((poi) => poi.poi_type === selectedPOICategory.value);
-    console.log('Filtered POIs:', filteredPOIs);
-
     // Add new markers
-    filteredPOIs.forEach((poi) => {
-      console.log('Adding marker for POI:', poi.title, 'type:', poi.poi_type);
-      const icon = poiIcons[poi.poi_type] || vintageIcon;
-      const marker = L.marker([poi.latitude, poi.longitude], { icon })
-        .bindPopup(
-          `
-          <div class="vintage-popup">
-            <h3>${poi.title}</h3>
-            <p>${poi.description}</p>
-            <div class="poi-tags">
-              ${poi.tags.map((tag) => `<span class="tag">${tag}</span>`).join(' ')}
+    newPois.forEach((poi) => {
+      const icon = poiIcons[poi.poi_type];
+      if (icon) {
+        const marker = L.marker([poi.latitude, poi.longitude], { icon })
+          .bindPopup(
+            `
+            <div class="vintage-popup">
+              <h3>${poi.title}</h3>
+              <p>${poi.description}</p>
+              <div class="poi-tags">
+                ${poi.tags.map((tag) => `<span class="tag">${tag}</span>`).join(' ')}
+              </div>
             </div>
-          </div>
-        `,
-        )
-        .addTo(map.value);
-      poiMarkers.value.push(marker);
+          `,
+          )
+          .addTo(map.value);
+        poiMarkers.value.push(marker);
+      }
     });
   },
 );
 
 // Watch for map movement with debounce
 function handleMapMove() {
-  if (!map.value || !showPOIs.value) return;
+  if (!map.value) return;
 
   // Debounce the API call
   if (mapMoveTimeout) {
@@ -336,17 +258,14 @@ onMounted(() => {
     map.value.on('moveend', handleMapMove);
     map.value.on('zoomend', handleMapMove);
 
-    // Initial load if POIs are enabled
-    if (showPOIs.value) {
-      updatePOIs();
-    }
+    // Initial load of POIs
+    updatePOIs();
   }
 });
 
 onUnmounted(() => {
   if (map.value) {
     map.value.remove();
-    clearMarkers();
     poiMarkers.value.forEach((marker) => marker.remove());
   }
   if (mapMoveTimeout) {
