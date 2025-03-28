@@ -140,7 +140,7 @@ const poiIcons = {
     iconAnchor: [18, 18],
   }),
   underground_club: L.divIcon({
-    className: 'poi-icon club',
+    className: 'poi-icon underground_club',
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   }),
@@ -166,6 +166,26 @@ const poiIcons = {
   }),
   bar: L.divIcon({
     className: 'poi-icon bar',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  }),
+  monument: L.divIcon({
+    className: 'poi-icon monument',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  }),
+  square: L.divIcon({
+    className: 'poi-icon square',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  }),
+  concert_hall: L.divIcon({
+    className: 'poi-icon concert_hall',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  }),
+  pub: L.divIcon({
+    className: 'poi-icon pub',
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   }),
@@ -261,15 +281,18 @@ function clearMarkers() {
 watch(
   () => poisStore.visiblePois,
   (newPois) => {
+    console.log('Visible POIs:', newPois);
     // Clear existing POI markers
     poiMarkers.value.forEach((marker) => marker.remove());
     poiMarkers.value = [];
 
     // Filter POIs based on selected category
     const filteredPOIs = selectedPOICategory.value === 'all' ? newPois : newPois.filter((poi) => poi.poi_type === selectedPOICategory.value);
+    console.log('Filtered POIs:', filteredPOIs);
 
     // Add new markers
     filteredPOIs.forEach((poi) => {
+      console.log('Adding marker for POI:', poi.title, 'type:', poi.poi_type);
       const icon = poiIcons[poi.poi_type] || vintageIcon;
       const marker = L.marker([poi.latitude, poi.longitude], { icon })
         .bindPopup(

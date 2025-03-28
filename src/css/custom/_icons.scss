@@ -49,10 +49,10 @@
     animation: pulse-bridge 2s infinite;
   }
 
-  &.club::before {
-    background-color: map-get($poi-colors, 'club');
-    background-image: url('/icons/club.svg');
-    animation: pulse-club 2s infinite;
+  &.underground_club::before {
+    background-color: map-get($poi-colors, 'underground_club');
+    background-image: url('/icons/underground_club.svg');
+    animation: pulse-underground_club 2s infinite;
   }
 
   &.museum::before {
@@ -85,7 +85,6 @@
     animation: pulse-bar 2s infinite;
   }
 
-  // Default icons for other categories
   &.hotel::before {
     background-color: map-get($poi-colors, 'hotel');
     background-image: url('/icons/hotel.svg');
@@ -103,12 +102,37 @@
     background-image: url('/icons/transport.svg');
     animation: pulse-transport 2s infinite;
   }
+
+  // New categories
+  &.monument::before {
+    background-color: map-get($poi-colors, 'monument');
+    background-image: url('/icons/monument.svg');
+    animation: pulse-monument 2s infinite;
+  }
+
+  &.square::before {
+    background-color: map-get($poi-colors, 'square');
+    background-image: url('/icons/square.svg');
+    animation: pulse-square 2s infinite;
+  }
+
+  &.concert_hall::before {
+    background-color: map-get($poi-colors, 'concert_hall');
+    background-image: url('/icons/concert_hall.svg');
+    animation: pulse-concert_hall 2s infinite;
+  }
+
+  &.pub::before {
+    background-color: map-get($poi-colors, 'pub');
+    background-image: url('/icons/pub.svg');
+    animation: pulse-pub 2s infinite;
+  }
 }
 
 // Base marker styles
 .vintage-marker {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -117,6 +141,7 @@
   cursor: pointer;
   transition: $transition-default;
   transform-origin: center bottom;
+  padding: 16px;
 
   &:hover {
     transform: scale(1.2);
