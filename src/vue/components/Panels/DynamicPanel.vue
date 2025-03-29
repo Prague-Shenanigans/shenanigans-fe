@@ -17,13 +17,6 @@
           <div class="default-primary">Primary Content</div>
         </slot>
       </div>
-
-      <!-- Secondary Content Section -->
-      <div class="panel-secondary">
-        <slot name="secondary">
-          <div class="default-secondary">Secondary Content</div>
-        </slot>
-      </div>
     </div>
   </div>
 </template>
@@ -152,17 +145,7 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.panel-secondary {
   overflow-y: auto;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
 }
 
 .state-indicator {

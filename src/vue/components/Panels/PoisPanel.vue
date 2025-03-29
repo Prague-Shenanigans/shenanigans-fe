@@ -2,27 +2,19 @@
   <DynamicPanel ref="panelRef" @close="handleClose">
     <template #header v-if="poi">
       <div class="poi-header" :style="headerStyle">
-        <h3>{{ poi.title }}</h3>
+        <div class="header-content">
+          <h3>{{ poi.title }}</h3>
+          <p class="description">{{ poi.description }}</p>
+        </div>
         <q-btn flat round icon="close" @click="handleClose" />
       </div>
     </template>
 
     <template #primary v-if="poi">
-      <div class="poi-primary">
+      <div class="poi-content">
         <div class="poi-image">
           <img :src="poi.header_image_url" :alt="poi.title" />
         </div>
-        <div class="poi-description">
-          <p>{{ poi.description }}</p>
-        </div>
-        <div class="poi-actions">
-          <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
-        </div>
-      </div>
-    </template>
-
-    <template #secondary v-if="poi">
-      <div class="poi-secondary">
         <div class="poi-details">
           <div class="detail-item">
             <q-icon name="location_on" />
@@ -41,6 +33,7 @@
           <MarkdownRenderer :content="poi.markdown_content" />
         </div>
         <div class="poi-actions">
+          <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
           <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
         </div>
       </div>
@@ -130,127 +123,148 @@ defineExpose({
 .poi-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
+  height: auto;
+  padding: 16px;
+  gap: 16px;
+  background: #ffffff; // Dark background for header
 
-  h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
+  .header-content {
+    flex: 1;
+    min-width: 0; // Prevents text overflow
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #000000;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .description {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: rgba(0, 0, 0, 0.9);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .q-btn {
+    color: #000000;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
   }
 }
 
-.poi-primary {
+.poi-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  width: 100%;
-
-  .poi-image {
-    width: 100%;
-    height: 200px;
-    border-radius: 8px;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .poi-description {
-    p {
-      margin: 0;
-      line-height: 1.5;
-      color: #666;
-    }
-  }
-
-  .poi-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-}
-
-.poi-secondary {
+  gap: 14px;
   width: 100%;
   height: 100%;
+  overflow-y: auto;
+  padding-right: 16px;
+  background: #ffffff; // White background for content
+}
+
+.poi-image {
+  width: auto;
+  min-height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.poi-details {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 12px;
+  padding: 16px;
+  background: #f5f5f5; // Light gray background for details
+  border-radius: 8px;
 
-  .poi-details {
+  .detail-item {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-shrink: 0;
-
-    .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #666;
-
-      .q-icon {
-        font-size: 20px;
-      }
-    }
-  }
-
-  .poi-markdown {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 16px;
-    margin: 24px 0;
-    line-height: 1.6;
-    color: #333;
-
-    :deep(h1) {
-      font-size: 1.8rem;
-      margin: 1.5rem 0 1rem;
-      font-weight: 600;
-    }
-
-    :deep(h2) {
-      font-size: 1.5rem;
-      margin: 1.2rem 0 1rem;
-      font-weight: 600;
-    }
-
-    :deep(p) {
-      margin: 1rem 0;
-    }
-
-    :deep(ul),
-    :deep(ol) {
-      margin: 1rem 0;
-      padding-left: 1.5rem;
-    }
-
-    :deep(li) {
-      margin: 0.5rem 0;
-    }
-
-    :deep(strong) {
-      font-weight: 600;
-    }
-
-    :deep(hr) {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 2rem 0;
-    }
-  }
-
-  .poi-actions {
-    display: flex;
+    align-items: center;
     gap: 8px;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 16px;
+    color: #333333;
+
+    .q-icon {
+      font-size: 20px;
+      color: #666666;
+    }
+  }
+}
+
+.poi-markdown {
+  line-height: 1.6;
+  color: #333333;
+
+  :deep(h1) {
+    font-size: 1.8rem;
+    margin: 1.5rem 0 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  :deep(h2) {
+    font-size: 1.5rem;
+    margin: 1.2rem 0 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  :deep(p) {
+    margin: 1rem 0;
+    color: #333333;
+  }
+
+  :deep(ul),
+  :deep(ol) {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #333333;
+  }
+
+  :deep(li) {
+    margin: 0.5rem 0;
+  }
+
+  :deep(strong) {
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  :deep(hr) {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 2rem 0;
+  }
+}
+
+.poi-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 16px;
+  background: #f5f5f5; // Light gray background for actions
+  border-radius: 8px;
+
+  .q-btn {
+    min-width: 120px;
   }
 }
 </style>
