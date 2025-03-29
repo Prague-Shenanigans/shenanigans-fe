@@ -107,7 +107,20 @@ function handleMapMove() {
   mapMoveTimeout = window.setTimeout(() => updatePOIs(), 500);
 }
 
-function handleGetDirections(routeData) {
+function centerOnRoute({ lat, lng }) {
+  if (!map.value) return;
+
+  // Add a larger vertical offset to move the center point higher up
+  const offsetLat = lat - 0.022; // Approximately 5km up
+
+  // Set the map view with the adjusted center
+  map.value.setView([offsetLat, lng], map.value.getZoom(), {
+    animate: true,
+    duration: 0.5,
+  });
+}
+
+async function handleGetDirections(routeData) {
   if (!map.value) return;
 
   // Remove existing route if any
@@ -115,27 +128,62 @@ function handleGetDirections(routeData) {
     map.value.removeLayer(routeLayer.value);
   }
 
-  // Create a polyline for the route
-  routeLayer.value = L.polyline(
-    [
-      [routeData.start.lat, routeData.start.lng],
-      [routeData.end.lat, routeData.end.lng],
-    ],
-    {
-      color: '#4285f4',
-      weight: 4,
-      opacity: 0.8,
-      dashArray: '10, 10',
-    },
-  );
+  try {
+    // Construct OSRM API URL for walking directions
+    const start = `${routeData.start.lng},${routeData.start.lat}`;
+    const end = `${routeData.end.lng},${routeData.end.lat}`;
+    const url = `https://router.project-osrm.org/route/v1/walking/${start};${end}?overview=full&geometries=geojson`;
 
-  // Add the route to the map
-  routeLayer.value.addTo(map.value);
+    // Fetch route from OSRM
+    const response = await fetch(url);
+    const data = await response.json();
 
-  // Fit the map to show the entire route
-  map.value.fitBounds(routeLayer.value.getBounds(), {
-    padding: [50, 50],
-  });
+    if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+      const route = data.routes[0];
+      const coordinates = route.geometry.coordinates.map((coord) => [coord[1], coord[0]]); // Convert from [lng, lat] to [lat, lng]
+
+      // Create a polyline for the route
+      routeLayer.value = L.polyline(coordinates, {
+        color: '#4285f4',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 10',
+      });
+
+      // Add the route to the map
+      routeLayer.value.addTo(map.value);
+
+      // Fit the map to show the entire route
+      map.value.fitBounds(routeLayer.value.getBounds(), {
+        padding: [50, 50],
+      });
+
+      // Center the map to show the route in the upper part
+      const center = routeLayer.value.getBounds().getCenter();
+      centerOnRoute({ lat: center.lat, lng: center.lng });
+    } else {
+      console.error('No route found:', data);
+    }
+  } catch (error) {
+    console.error('Error fetching route:', error);
+    // Fallback to straight line if routing fails
+    routeLayer.value = L.polyline(
+      [
+        [routeData.start.lat, routeData.start.lng],
+        [routeData.end.lat, routeData.end.lng],
+      ],
+      {
+        color: '#4285f4',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 10',
+      },
+    );
+    routeLayer.value.addTo(map.value);
+    map.value.fitBounds(routeLayer.value.getBounds(), {
+      padding: [50, 50],
+    });
+  }
 }
 
 function handleSaveToTrip(poi) {
@@ -167,19 +215,6 @@ function centerOnUser() {
 
   const { lat, lng } = locationStore.coordinates;
   map.value.setView([lat, lng], map.value.getZoom(), {
-    animate: true,
-    duration: 0.5,
-  });
-}
-
-function centerOnRoute({ lat, lng }) {
-  if (!map.value) return;
-
-  // Add a larger vertical offset to move the center point higher up
-  const offsetLat = lat - 0.022; // Approximately 5km up
-
-  // Set the map view with the adjusted center
-  map.value.setView([offsetLat, lng], map.value.getZoom(), {
     animate: true,
     duration: 0.5,
   });
