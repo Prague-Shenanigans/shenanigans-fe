@@ -10,12 +10,12 @@
       </select>
     </div>
 
-    <PoiInfoPanel v-if="selectedMarker" @close="selectedMarker = null">
+    <DynamicPanel>
       <div>
-        <h3>{{ selectedMarker.title }}</h3>
-        <p>{{ selectedMarker.description }}</p>
+        <h3>{{ 'title' }}</h3>
+        <p>{{ 'selectedMarker.description' }}</p>
       </div>
-    </PoiInfoPanel>
+    </DynamicPanel>
   </div>
 </template>
 
@@ -23,7 +23,7 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import L from 'leaflet';
 import { usePoisStore } from '../../stores/pois.store';
-import PoiInfoPanel from './InfoPanel.vue';
+import DynamicPanel from './Panels/DynamicPanel.vue';
 import '../../css/custom/main.scss';
 
 const mapRef = ref(null);
