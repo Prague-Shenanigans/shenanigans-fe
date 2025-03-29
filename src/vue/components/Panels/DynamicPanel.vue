@@ -107,7 +107,6 @@ defineExpose({
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px;
 }
 
 .panel-header {
@@ -116,6 +115,7 @@ defineExpose({
   align-items: center;
   margin-bottom: 16px;
   flex-shrink: 0;
+  padding: 16px;
 
   .drag-handle {
     width: 40px;
@@ -146,6 +146,7 @@ defineExpose({
   align-items: center;
   justify-content: center;
   overflow-y: auto;
+  padding: 16px;
 }
 
 .state-indicator {

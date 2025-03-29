@@ -126,7 +126,7 @@ defineExpose({
   align-items: flex-start;
   width: 100%;
   height: auto;
-  padding: 16px;
+  padding: 0 0 0 16px;
   gap: 16px;
   background: #ffffff; // Dark background for header
 

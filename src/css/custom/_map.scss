@@ -61,6 +61,13 @@
   z-index: 1;
 }
 
+// Hide Leaflet zoom controls
+.leaflet-control-container {
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+}
+
 // Map Controls
 .map-controls {
   position: absolute;
