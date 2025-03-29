@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { QBtn, QIcon } from 'quasar';
 import { useLocationStore } from '../../../stores/location';
 import DynamicPanel from './DynamicPanel.vue';
@@ -61,8 +61,23 @@ const props = defineProps({
 const emit = defineEmits(['close', 'get-directions', 'save-to-trip']);
 const panelRef = ref(null);
 const locationStore = useLocationStore();
+const isChangingPoi = ref(false);
+
+// Watch for POI changes
+watch(
+  () => props.poi,
+  () => {
+    isChangingPoi.value = true;
+    setTimeout(() => {
+      isChangingPoi.value = false;
+    }, 500); // Give enough time for the panel to update
+  },
+);
 
 function handleClose() {
+  // Don't close if we're in the middle of changing POIs
+  if (isChangingPoi.value) return;
+
   panelRef.value?.setCurrentState(0);
   setTimeout(() => {
     emit('close');
