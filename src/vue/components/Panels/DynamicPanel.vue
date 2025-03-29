@@ -1,8 +1,8 @@
 <template>
-  <div ref="panelRef" class="dynamic-panel" :class="`state-${currentState}`" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+  <div ref="panelRef" class="dynamic-panel" :class="`state-${currentState}`">
     <div class="panel-content">
       <!-- Header Section -->
-      <div class="panel-header">
+      <div class="panel-header" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
         <div class="drag-handle"></div>
         <slot name="header">
           <div class="default-header">
