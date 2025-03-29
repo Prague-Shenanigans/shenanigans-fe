@@ -10,7 +10,7 @@
       </select>
     </div>
 
-    <DynamicPanel v-if="selectedMarker" ref="panelRef" :state="panelState" @close="handlePanelClose">
+    <DynamicPanel ref="panelRef" @close="handlePanelClose">
       <PoisPanel :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
     </DynamicPanel>
   </div>

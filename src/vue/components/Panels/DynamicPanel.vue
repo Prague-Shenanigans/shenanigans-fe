@@ -1,5 +1,5 @@
 <template>
-  <div class="dynamic-panel" :class="`state-${currentState}`" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+  <div ref="panelRef" class="dynamic-panel" :class="`state-${currentState}`" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <div class="panel-content">
       <!-- Header Section -->
       <div class="panel-header">
@@ -32,11 +32,16 @@
 
 <script setup>
 import { ref } from 'vue';
+import { onClickOutside } from '@vueuse/core';
 
-const currentState = ref(1);
+const emit = defineEmits(['close']);
+
+const currentState = ref(0);
 let startY = 0;
 let currentY = 0;
 let deltaY = 0;
+
+const panelRef = ref(null);
 
 function setCurrentState(value) {
   currentState.value = value;
@@ -52,19 +57,20 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd() {
-  if (deltaY < -30) {
-    // Swipe up
-    if (currentState.value < 3) {
-      currentState.value++;
-    }
-  } else if (deltaY > 30) {
-    // Swipe down
-    if (currentState.value > 0) {
-      currentState.value--;
-    }
+  if (deltaY < -30 && currentState.value < 3) {
+    currentState.value++;
+  } else if (deltaY > 30 && currentState.value > 0) {
+    currentState.value--;
   }
   deltaY = 0;
 }
+
+onClickOutside(panelRef, () => {
+  setCurrentState(0);
+  setTimeout(() => {
+    emit('close');
+  }, 300);
+});
 
 defineExpose({
   setCurrentState,
@@ -96,11 +102,11 @@ defineExpose({
   }
 
   &.state-2 {
-    height: 40vh;
+    height: 55vh;
   }
 
   &.state-3 {
-    height: 80vh;
+    height: 90vh;
   }
 }
 
