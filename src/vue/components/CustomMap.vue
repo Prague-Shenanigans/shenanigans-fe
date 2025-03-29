@@ -137,6 +137,7 @@ function handleSaveToTrip(poi) {
 
 function handleMarkerSelect(poi) {
   console.log('Selected POI:', poi);
+  console.log('Markdown content:', poi.markdown_content);
   selectedMarker.value = poi;
   // Set panel state after a short delay to ensure data is ready
   setTimeout(() => {
@@ -221,7 +222,7 @@ watch(
           className: 'poi-icon custom-icon',
           iconSize: [36, 36],
           iconAnchor: [18, 18],
-          html: `<img src="${poi.icon_url}" alt="${poi.title}" style="width: 100%; height: 100%; object-fit: contain;">`,
+          html: `<img src="${poi.icon_url}" alt="${poi.title}" style="width: 150%; height: 150%; object-fit: contain;">`,
         });
       } else {
         // Fallback to default icon based on poi_type
@@ -395,31 +396,31 @@ onUnmounted(() => {
   }
 }
 
-.poi-secondary {
-  width: 100%;
+// .poi-secondary {
+//   width: 100%;
 
-  .poi-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
+//   .poi-details {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 12px;
+//     margin-bottom: 16px;
 
-    .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #666;
+//     .detail-item {
+//       display: flex;
+//       align-items: center;
+//       gap: 8px;
+//       color: #666;
 
-      .q-icon {
-        font-size: 20px;
-      }
-    }
-  }
+//       .q-icon {
+//         font-size: 20px;
+//       }
+//     }
+//   }
 
-  .poi-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-}
+//   .poi-actions {
+//     display: flex;
+//     gap: 8px;
+//     justify-content: center;
+//   }
+// }
 </style>

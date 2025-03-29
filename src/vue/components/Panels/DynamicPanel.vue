@@ -24,8 +24,6 @@
           <div class="default-secondary">Secondary Content</div>
         </slot>
       </div>
-
-      <div class="state-indicator">State: {{ currentState }}</div>
     </div>
   </div>
 </template>

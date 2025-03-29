@@ -1,7 +1,7 @@
 <template>
   <DynamicPanel ref="panelRef" @close="handleClose">
     <template #header v-if="poi">
-      <div class="poi-header">
+      <div class="poi-header" :style="headerStyle">
         <h3>{{ poi.title }}</h3>
         <q-btn flat round icon="close" @click="handleClose" />
       </div>
@@ -37,7 +37,9 @@
             <span>{{ poi.category?.name || 'Uncategorized' }}</span>
           </div>
         </div>
-        <MarkdownRenderer :content="poi.description" />
+        <div class="poi-markdown">
+          <MarkdownRenderer :content="poi.markdown_content" />
+        </div>
         <div class="poi-actions">
           <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
         </div>
@@ -47,9 +49,8 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { QBtn, QIcon } from 'quasar';
-import { marked } from 'marked';
 import { useLocationStore } from '../../../stores/location';
 import DynamicPanel from './DynamicPanel.vue';
 import MarkdownRenderer from '../common/MarkdownRenderer.vue';
@@ -58,6 +59,16 @@ const props = defineProps({
   poi: {
     type: Object,
     required: true,
+    validator: (value) =>
+      value &&
+      typeof value.title === 'string' &&
+      typeof value.description === 'string' &&
+      typeof value.image_url === 'string' &&
+      typeof value.header_image_url === 'string' &&
+      typeof value.address === 'string' &&
+      typeof value.opening_hours === 'string' &&
+      typeof value.category === 'string' &&
+      typeof value.markdown_content === 'string',
   },
 });
 
@@ -65,11 +76,6 @@ const emit = defineEmits(['close', 'get-directions', 'save-to-trip']);
 const panelRef = ref(null);
 const locationStore = useLocationStore();
 const isChangingPoi = ref(false);
-
-const renderedDescription = computed(() => {
-  if (!props.poi?.description) return '';
-  return marked(props.poi.description);
-});
 
 // Watch for POI changes
 watch(
@@ -170,12 +176,17 @@ defineExpose({
 
 .poi-secondary {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   .poi-details {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-bottom: 16px;
+    flex-shrink: 0;
 
     .detail-item {
       display: flex;
@@ -189,10 +200,57 @@ defineExpose({
     }
   }
 
+  .poi-markdown {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 16px;
+    margin: 24px 0;
+    line-height: 1.6;
+    color: #333;
+
+    :deep(h1) {
+      font-size: 1.8rem;
+      margin: 1.5rem 0 1rem;
+      font-weight: 600;
+    }
+
+    :deep(h2) {
+      font-size: 1.5rem;
+      margin: 1.2rem 0 1rem;
+      font-weight: 600;
+    }
+
+    :deep(p) {
+      margin: 1rem 0;
+    }
+
+    :deep(ul),
+    :deep(ol) {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+    }
+
+    :deep(li) {
+      margin: 0.5rem 0;
+    }
+
+    :deep(strong) {
+      font-weight: 600;
+    }
+
+    :deep(hr) {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 2rem 0;
+    }
+  }
+
   .poi-actions {
     display: flex;
     gap: 8px;
     justify-content: center;
+    flex-shrink: 0;
+    margin-top: 16px;
   }
 }
 </style>
