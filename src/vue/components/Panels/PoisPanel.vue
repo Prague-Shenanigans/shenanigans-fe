@@ -16,25 +16,27 @@
           <img :src="poi.header_image_url" :alt="poi.title" />
         </div>
         <div class="poi-details">
-          <div class="detail-item">
-            <q-icon name="location_on" />
-            <span>{{ poi.address }}</span>
+          <div class="details-column">
+            <div class="detail-item">
+              <q-icon name="location_on" />
+              <span>{{ poi.address }}</span>
+            </div>
+            <div class="detail-item">
+              <q-icon name="schedule" />
+              <span>{{ poi.opening_hours }}</span>
+            </div>
+            <div class="detail-item">
+              <q-icon name="category" />
+              <span>{{ poi.category?.name || 'Uncategorized' }}</span>
+            </div>
           </div>
-          <div class="detail-item">
-            <q-icon name="schedule" />
-            <span>{{ poi.opening_hours }}</span>
-          </div>
-          <div class="detail-item">
-            <q-icon name="category" />
-            <span>{{ poi.category?.name || 'Uncategorized' }}</span>
+          <div class="actions-column">
+            <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
+            <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
           </div>
         </div>
         <div class="poi-markdown">
           <MarkdownRenderer :content="poi.markdown_content" />
-        </div>
-        <div class="poi-actions">
-          <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
-          <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
         </div>
       </div>
     </template>
@@ -128,7 +130,7 @@ defineExpose({
   height: auto;
   padding: 0 0 0 16px;
   gap: 16px;
-  background: #ffffff; // Dark background for header
+  background: #ffffff; // White background for header
 
   .header-content {
     flex: 1;
@@ -189,21 +191,39 @@ defineExpose({
 
 .poi-details {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   padding: 16px;
   background: #f5f5f5; // Light gray background for details
   border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 
-  .detail-item {
+  .details-column {
+    flex: 1;
     display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #333333;
+    flex-direction: column;
+    gap: 12px;
 
-    .q-icon {
-      font-size: 20px;
-      color: #666666;
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #333333;
+
+      .q-icon {
+        font-size: 20px;
+        color: #666666;
+      }
+    }
+  }
+
+  .actions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+
+    .q-btn {
+      min-width: 120px;
     }
   }
 }
@@ -251,20 +271,6 @@ defineExpose({
     border: none;
     border-top: 1px solid #e0e0e0;
     margin: 2rem 0;
-  }
-}
-
-.poi-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 16px;
-  padding: 16px;
-  background: #f5f5f5; // Light gray background for actions
-  border-radius: 8px;
-
-  .q-btn {
-    min-width: 120px;
   }
 }
 </style>
