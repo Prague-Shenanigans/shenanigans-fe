@@ -9,9 +9,7 @@
       </q-btn>
     </div>
 
-    <DynamicPanel ref="panelRef" @close="handlePanelClose">
-      <PoisPanel :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
-    </DynamicPanel>
+    <PoisPanel v-if="selectedMarker" ref="poisPanelRef" :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
   </div>
 </template>
 
@@ -21,13 +19,12 @@ import L from 'leaflet';
 import { QBtn, QTooltip } from 'quasar';
 import { usePoisStore } from '../../stores/pois.store';
 import { useLocationStore } from '../../stores/location';
-import DynamicPanel from './Panels/DynamicPanel.vue';
 import PoisPanel from './Panels/PoisPanel.vue';
 import '../../css/custom/main.scss';
 
 const mapRef = ref(null);
 const map = ref(null);
-const panelRef = ref(null);
+const poisPanelRef = ref(null);
 const tileLayer = ref(null);
 const gridLayer = ref(null);
 const poiMarkers = ref([]);
@@ -35,6 +32,7 @@ const userMarker = ref(null);
 const selectedMarker = ref(null);
 const showGrid = ref(false);
 let mapMoveTimeout = null;
+const routeLayer = ref(null);
 
 const poisStore = usePoisStore();
 const locationStore = useLocationStore();
@@ -101,9 +99,35 @@ function handleMapMove() {
   mapMoveTimeout = window.setTimeout(() => updatePOIs(), 500);
 }
 
-function handleGetDirections(poi) {
-  // TODO: Implement directions functionality
-  console.log('Getting directions to:', poi.title);
+function handleGetDirections(routeData) {
+  if (!map.value) return;
+
+  // Remove existing route if any
+  if (routeLayer.value) {
+    map.value.removeLayer(routeLayer.value);
+  }
+
+  // Create a polyline for the route
+  routeLayer.value = L.polyline(
+    [
+      [routeData.start.lat, routeData.start.lng],
+      [routeData.end.lat, routeData.end.lng],
+    ],
+    {
+      color: '#4285f4',
+      weight: 4,
+      opacity: 0.8,
+      dashArray: '10, 10',
+    },
+  );
+
+  // Add the route to the map
+  routeLayer.value.addTo(map.value);
+
+  // Fit the map to show the entire route
+  map.value.fitBounds(routeLayer.value.getBounds(), {
+    padding: [50, 50],
+  });
 }
 
 function handleSaveToTrip(poi) {
@@ -112,12 +136,21 @@ function handleSaveToTrip(poi) {
 }
 
 function handleMarkerSelect(poi) {
+  console.log('Selected POI:', poi);
   selectedMarker.value = poi;
-  panelRef.value?.setCurrentState(1);
+  // Set panel state after a short delay to ensure data is ready
+  setTimeout(() => {
+    poisPanelRef.value?.setCurrentState(1);
+  }, 50);
 }
 
 function handlePanelClose() {
-  selectedMarker.value = null;
+  // First set the state to 0
+  poisPanelRef.value?.setCurrentState(0);
+  // Then clear the selected marker after animation
+  setTimeout(() => {
+    selectedMarker.value = null;
+  }, 300);
 }
 
 // Add function to handle location button click
@@ -307,6 +340,86 @@ onUnmounted(() => {
   100% {
     transform: translate(-50%, -50%) scale(1.5);
     opacity: 0;
+  }
+}
+
+:deep(.leaflet-polyline) {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.poi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.poi-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  .poi-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .poi-description {
+    p {
+      margin: 0;
+      line-height: 1.5;
+      color: #666;
+    }
+  }
+
+  .poi-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+}
+
+.poi-secondary {
+  width: 100%;
+
+  .poi-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+
+      .q-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .poi-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
   }
 }
 </style>

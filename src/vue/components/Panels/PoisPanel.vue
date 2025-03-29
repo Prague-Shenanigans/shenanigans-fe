@@ -1,80 +1,103 @@
 <template>
-  <div class="pois-panel">
-    <div class="poi-header">
-      <h3>{{ poi.title }}</h3>
-      <q-btn flat round icon="close" @click="handleClose" />
-    </div>
+  <DynamicPanel ref="panelRef" @close="handleClose">
+    <template #header v-if="poi">
+      <div class="poi-header">
+        <h3>{{ poi.title }}</h3>
+        <q-btn flat round icon="close" @click="handleClose" />
+      </div>
+    </template>
 
-    <div class="poi-primary">
-      <div class="poi-image">
-        <img :src="poi.image_url" :alt="poi.title" />
+    <template #primary v-if="poi">
+      <div class="poi-primary">
+        <div class="poi-image">
+          <img :src="poi.image_url" :alt="poi.title" />
+        </div>
+        <div class="poi-description">
+          <p>{{ poi.description }}</p>
+        </div>
+        <div class="poi-actions">
+          <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
+        </div>
       </div>
-      <div class="poi-description">
-        <p>{{ poi.description }}</p>
-      </div>
-    </div>
+    </template>
 
-    <div class="poi-secondary">
-      <div class="poi-details">
-        <div class="detail-item">
-          <q-icon name="location_on" />
-          <span>{{ poi.address }}</span>
+    <template #secondary v-if="poi">
+      <div class="poi-secondary">
+        <div class="poi-details">
+          <div class="detail-item">
+            <q-icon name="location_on" />
+            <span>{{ poi.address }}</span>
+          </div>
+          <div class="detail-item">
+            <q-icon name="schedule" />
+            <span>{{ poi.opening_hours }}</span>
+          </div>
+          <div class="detail-item">
+            <q-icon name="category" />
+            <span>{{ poi.category }}</span>
+          </div>
         </div>
-        <div class="detail-item">
-          <q-icon name="schedule" />
-          <span>{{ poi.opening_hours }}</span>
-        </div>
-        <div class="detail-item">
-          <q-icon name="category" />
-          <span>{{ poi.category }}</span>
+        <div class="poi-actions">
+          <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
         </div>
       </div>
-      <div class="poi-actions">
-        <q-btn color="primary" label="Get Directions" @click="handleGetDirections" />
-        <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
-      </div>
-    </div>
-  </div>
+    </template>
+  </DynamicPanel>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { ref } from 'vue';
+import { QBtn, QIcon } from 'quasar';
+import { useLocationStore } from '../../../stores/location';
+import DynamicPanel from './DynamicPanel.vue';
 
 const props = defineProps({
   poi: {
     type: Object,
     required: true,
-    validator: (value) =>
-      value &&
-      typeof value.title === 'string' &&
-      typeof value.description === 'string' &&
-      typeof value.image_url === 'string' &&
-      typeof value.address === 'string' &&
-      typeof value.opening_hours === 'string' &&
-      typeof value.category === 'string',
   },
 });
 
-const emit = defineEmits(['close', 'getDirections', 'saveToTrip']);
+const emit = defineEmits(['close', 'get-directions', 'save-to-trip']);
+const panelRef = ref(null);
+const locationStore = useLocationStore();
 
-function handleGetDirections() {
-  emit('getDirections', props.poi);
+function handleClose() {
+  panelRef.value?.setCurrentState(0);
+  setTimeout(() => {
+    emit('close');
+  }, 300);
 }
 
 function handleSaveToTrip() {
-  emit('saveToTrip', props.poi);
+  emit('save-to-trip', props.poi);
 }
 
-function handleClose() {
-  emit('close');
+async function handleNavigate() {
+  if (!locationStore.coordinates) {
+    try {
+      await locationStore.getCurrentPosition();
+    } catch (error) {
+      console.error('Failed to get user location:', error);
+      return;
+    }
+  }
+
+  const { lat: startLat, lng: startLng } = locationStore.coordinates;
+  const { latitude: endLat, longitude: endLng } = props.poi;
+
+  emit('get-directions', {
+    start: { lat: startLat, lng: startLng },
+    end: { lat: endLat, lng: endLng },
+  });
 }
+
+defineExpose({
+  setCurrentState: (state) => panelRef.value?.setCurrentState(state),
+});
 </script>
 
 <style lang="scss" scoped>
-.pois-panel {
-  width: 100%;
-}
-
 .poi-header {
   display: flex;
   justify-content: space-between;
@@ -113,6 +136,12 @@ function handleClose() {
       line-height: 1.5;
       color: #666;
     }
+  }
+
+  .poi-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
   }
 }
 

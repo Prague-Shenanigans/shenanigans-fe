@@ -66,10 +66,12 @@ function handleTouchEnd() {
 }
 
 onClickOutside(panelRef, () => {
-  setCurrentState(0);
-  setTimeout(() => {
-    emit('close');
-  }, 300);
+  if (currentState.value > 0) {
+    setCurrentState(0);
+    setTimeout(() => {
+      emit('close');
+    }, 300);
+  }
 });
 
 defineExpose({
