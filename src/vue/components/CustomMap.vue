@@ -282,7 +282,14 @@ watch(
           className: 'poi-icon custom-icon',
           iconSize: [36, 36],
           iconAnchor: [18, 18],
-          html: `<img src="${poi.icon_url}" alt="${poi.title}" style="width: 150%; height: 150%; object-fit: contain;">`,
+          html: `<img src="${poi.icon_url}" alt="${poi.title}" style="
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            position: relative;
+            top: -6px;
+            left: -6px;
+          ">`,
         });
       } else {
         // Fallback to default icon based on poi_type
