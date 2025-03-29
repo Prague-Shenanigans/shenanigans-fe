@@ -1,5 +1,5 @@
 <template>
-  <div class="dynamic-panel" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+  <div class="dynamic-panel" :class="`state-${currentState}`" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <div class="panel-content">
       <slot />
       <div class="state-indicator">State: {{ currentState }}</div>
@@ -48,13 +48,31 @@ function handleTouchEnd() {
   left: 0;
   right: 0;
   width: 100%;
-  height: 20vh; // 20% of viewport height
   background: white;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   z-index: 1000;
   padding: 16px;
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &.state-0 {
+    height: 0;
+    padding: 0;
+  }
+
+  &.state-1 {
+    height: 20vh;
+  }
+
+  &.state-2 {
+    height: 40vh;
+  }
+
+  &.state-3 {
+    height: 80vh;
+  }
 }
 
 .panel-content {
