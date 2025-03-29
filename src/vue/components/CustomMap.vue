@@ -226,7 +226,21 @@ watch(
     poiMarkers.value = [];
 
     pois.forEach((poi) => {
-      const icon = poiIcons[poi.poi_type];
+      let icon;
+
+      if (poi.icon_url) {
+        // Use custom icon from API if available
+        icon = L.divIcon({
+          className: 'poi-icon custom-icon',
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+          html: `<img src="${poi.icon_url}" alt="${poi.title}" style="width: 100%; height: 100%; object-fit: contain;">`,
+        });
+      } else {
+        // Fallback to default icon based on poi_type
+        icon = poiIcons[poi.poi_type];
+      }
+
       if (icon) {
         const marker = L.marker([poi.latitude, poi.longitude], { icon });
         marker.on('click', () => {
@@ -427,6 +441,13 @@ onUnmounted(() => {
   100% {
     transform: translate(-50%, -50%) scale(1.5);
     opacity: 0;
+  }
+}
+
+// Add styles for custom icons
+:deep(.poi-icon.custom-icon) {
+  img {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 }
 </style>
