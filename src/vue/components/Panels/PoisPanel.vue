@@ -34,9 +34,10 @@
           </div>
           <div class="detail-item">
             <q-icon name="category" />
-            <span>{{ poi.category }}</span>
+            <span>{{ poi.category?.name || 'Uncategorized' }}</span>
           </div>
         </div>
+        <MarkdownRenderer :content="poi.description" />
         <div class="poi-actions">
           <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
         </div>
@@ -46,10 +47,12 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { QBtn, QIcon } from 'quasar';
+import { marked } from 'marked';
 import { useLocationStore } from '../../../stores/location';
 import DynamicPanel from './DynamicPanel.vue';
+import MarkdownRenderer from '../common/MarkdownRenderer.vue';
 
 const props = defineProps({
   poi: {
@@ -62,6 +65,11 @@ const emit = defineEmits(['close', 'get-directions', 'save-to-trip']);
 const panelRef = ref(null);
 const locationStore = useLocationStore();
 const isChangingPoi = ref(false);
+
+const renderedDescription = computed(() => {
+  if (!props.poi?.description) return '';
+  return marked(props.poi.description);
+});
 
 // Watch for POI changes
 watch(
