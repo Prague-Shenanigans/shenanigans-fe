@@ -2,14 +2,6 @@
   <div class="map-wrapper">
     <div ref="mapRef" class="map-container"></div>
 
-    <div class="control-group">
-      <select v-model="selectedStyle" @change="updateMapStyle">
-        <option v-for="style in mapStyles" :key="style.name" :value="style.name">
-          {{ style.label }}
-        </option>
-      </select>
-    </div>
-
     <!-- Add location control button -->
     <div class="location-control">
       <q-btn round flat :color="locationStore.isWatching ? 'primary' : 'grey'" icon="my_location" @click="handleLocationClick">
@@ -41,42 +33,11 @@ const gridLayer = ref(null);
 const poiMarkers = ref([]);
 const userMarker = ref(null);
 const selectedMarker = ref(null);
-const selectedStyle = ref('vintage');
 const showGrid = ref(false);
 let mapMoveTimeout = null;
 
 const poisStore = usePoisStore();
 const locationStore = useLocationStore();
-
-const mapStyles = [
-  {
-    name: 'vintage',
-    label: 'Vintage Map',
-    style: {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      options: { attribution: '© OpenStreetMap contributors' },
-      css: `
-        .vintage-map { filter: sepia(30%) contrast(110%) brightness(95%); }
-        .vintage-map .leaflet-tile { filter: sepia(30%) contrast(110%) brightness(95%); }
-        .vintage-map .leaflet-tile[src*='water'] { filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(180deg) saturate(150%); }
-        .vintage-map .leaflet-tile[src*='park'],
-        .vintage-map .leaflet-tile[src*='forest'],
-        .vintage-map .leaflet-tile[src*='nature_reserve'] { filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(90deg) saturate(120%); }
-        .vintage-map .leaflet-tile[src*='highway'],
-        .vintage-map .leaflet-tile[src*='road'] { filter: sepia(30%) contrast(120%) brightness(90%); }
-        .vintage-map .leaflet-tile[src*='building'] { filter: sepia(30%) contrast(110%) brightness(85%); }
-      `,
-    },
-  },
-  {
-    name: 'default',
-    label: 'Default Map',
-    style: {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      options: { attribution: '© OpenStreetMap contributors' },
-    },
-  },
-];
 
 const poiIcons = {
   landmark: L.divIcon({ className: 'poi-icon landmark', iconSize: [36, 36], iconAnchor: [18, 18] }),
@@ -116,19 +77,10 @@ function updateMapStyle() {
   if (tileLayer.value) map.value.removeLayer(tileLayer.value);
   if (gridLayer.value) map.value.removeLayer(gridLayer.value);
 
-  const style = mapStyles.find((s) => s.name === selectedStyle.value)?.style;
-  if (!style) return;
-
-  tileLayer.value = L.tileLayer(style.url, style.options);
+  tileLayer.value = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+  });
   tileLayer.value.addTo(map.value);
-
-  if (style.css) {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = style.css;
-    document.head.appendChild(styleElement);
-  }
-
-  map.value.getContainer().classList.toggle('vintage-map', selectedStyle.value === 'vintage');
 
   if (showGrid.value) {
     gridLayer.value = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -307,93 +259,6 @@ onUnmounted(() => {
   width: 100%;
 }
 
-.control-group {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-}
-
-.control-group select {
-  border: none;
-  background: transparent;
-  font-size: 14px;
-}
-
-// POI Panel Styles
-.poi-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-
-  h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-  }
-}
-
-.poi-primary {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-
-  .poi-image {
-    width: 100%;
-    height: 200px;
-    border-radius: 8px;
-    overflow: hidden;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  .poi-description {
-    p {
-      margin: 0;
-      line-height: 1.5;
-      color: #666;
-    }
-  }
-}
-
-.poi-secondary {
-  width: 100%;
-
-  .poi-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
-
-    .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #666;
-
-      .q-icon {
-        font-size: 20px;
-      }
-    }
-  }
-
-  .poi-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-}
-
 .location-control {
   position: fixed;
   bottom: 20px;
@@ -405,7 +270,6 @@ onUnmounted(() => {
   padding: 4px;
 }
 
-// Update user location icon styles
 :deep(.user-location-icon) {
   .user-location-dot {
     width: 12px;
@@ -441,13 +305,6 @@ onUnmounted(() => {
   100% {
     transform: translate(-50%, -50%) scale(1.5);
     opacity: 0;
-  }
-}
-
-// Add styles for custom icons
-:deep(.poi-icon.custom-icon) {
-  img {
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   }
 }
 </style>
