@@ -2,7 +2,7 @@
   <div class="pois-panel">
     <div class="poi-header">
       <h3>{{ poi.title }}</h3>
-      <q-btn flat round icon="close" @click="$emit('close')" />
+      <q-btn flat round icon="close" @click="handleClose" />
     </div>
 
     <div class="poi-primary">
@@ -63,6 +63,10 @@ function handleGetDirections() {
 
 function handleSaveToTrip() {
   emit('saveToTrip', props.poi);
+}
+
+function handleClose() {
+  emit('close');
 }
 </script>
 

@@ -38,6 +38,10 @@ let startY = 0;
 let currentY = 0;
 let deltaY = 0;
 
+function setCurrentState(value) {
+  currentState.value = value;
+}
+
 function handleTouchStart(e) {
   startY = e.touches[0].clientY;
 }
@@ -61,6 +65,10 @@ function handleTouchEnd() {
   }
   deltaY = 0;
 }
+
+defineExpose({
+  setCurrentState,
+});
 </script>
 
 <style lang="scss" scoped>

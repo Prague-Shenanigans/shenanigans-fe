@@ -10,8 +10,8 @@
       </select>
     </div>
 
-    <DynamicPanel v-if="selectedMarker">
-      <PoisPanel :poi="selectedMarker" @close="selectedMarker = null" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
+    <DynamicPanel v-if="selectedMarker" ref="panelRef" :state="panelState" @close="handlePanelClose">
+      <PoisPanel :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
     </DynamicPanel>
   </div>
 </template>
@@ -26,6 +26,7 @@ import '../../css/custom/main.scss';
 
 const mapRef = ref(null);
 const map = ref(null);
+const panelRef = ref(null); // <== ADD THIS
 const tileLayer = ref(null);
 const gridLayer = ref(null);
 const poiMarkers = ref([]);
@@ -134,6 +135,15 @@ function handleSaveToTrip(poi) {
   console.log('Saving to trip:', poi.title);
 }
 
+function handleMarkerSelect(poi) {
+  selectedMarker.value = poi;
+  panelRef.value?.setCurrentState(1); // <== CALL CHILD METHOD
+}
+
+function handlePanelClose() {
+  selectedMarker.value = null;
+}
+
 watch(
   () => poisStore.visiblePois,
   (pois) => {
@@ -145,7 +155,7 @@ watch(
       if (icon) {
         const marker = L.marker([poi.latitude, poi.longitude], { icon });
         marker.on('click', () => {
-          selectedMarker.value = poi;
+          handleMarkerSelect(poi);
         });
         marker.addTo(map.value);
         poiMarkers.value.push(marker);
