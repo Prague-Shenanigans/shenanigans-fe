@@ -67,7 +67,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close', 'get-directions', 'save-to-trip']);
+const emit = defineEmits(['close', 'get-directions', 'save-to-trip', 'center-map']);
 const panelRef = ref(null);
 const locationStore = useLocationStore();
 const isChangingPoi = ref(false);
@@ -110,9 +110,23 @@ async function handleNavigate() {
   const { lat: startLat, lng: startLng } = locationStore.coordinates;
   const { latitude: endLat, longitude: endLng } = props.poi;
 
+  // Set panel state to 2 (half height)
+  panelRef.value?.setCurrentState(2);
+
+  // Emit both the directions and center-map events
   emit('get-directions', {
     start: { lat: startLat, lng: startLng },
     end: { lat: endLat, lng: endLng },
+  });
+  emit('center-map', {
+    lat: (startLat + endLat) / 2,
+    lng: (startLng + endLng) / 2,
+    bounds: {
+      north: Math.max(startLat, endLat),
+      south: Math.min(startLat, endLat),
+      east: Math.max(startLng, endLng),
+      west: Math.min(startLng, endLng),
+    },
   });
 }
 

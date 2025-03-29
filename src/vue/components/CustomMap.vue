@@ -9,7 +9,15 @@
       </q-btn>
     </div>
 
-    <PoisPanel v-if="selectedMarker" ref="poisPanelRef" :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
+    <PoisPanel
+      v-if="selectedMarker"
+      ref="poisPanelRef"
+      :poi="selectedMarker"
+      @close="handlePanelClose"
+      @get-directions="handleGetDirections"
+      @save-to-trip="handleSaveToTrip"
+      @center-map="handleCenterMap"
+    />
   </div>
 </template>
 
@@ -154,7 +162,29 @@ function handlePanelClose() {
   }, 300);
 }
 
-// Add function to handle location button click
+function centerOnUser() {
+  if (!map.value || !locationStore.coordinates) return;
+
+  const { lat, lng } = locationStore.coordinates;
+  map.value.setView([lat, lng], map.value.getZoom(), {
+    animate: true,
+    duration: 0.5,
+  });
+}
+
+function centerOnRoute({ lat, lng }) {
+  if (!map.value) return;
+
+  // Add a larger vertical offset to move the center point higher up
+  const offsetLat = lat - 0.022; // Approximately 5km up
+
+  // Set the map view with the adjusted center
+  map.value.setView([offsetLat, lng], map.value.getZoom(), {
+    animate: true,
+    duration: 0.5,
+  });
+}
+
 async function handleLocationClick() {
   if (!locationStore.isWatching) {
     // Start continuous updates
@@ -170,20 +200,12 @@ async function handleLocationClick() {
 
   // Center map on user location
   if (locationStore.coordinates) {
-    const { lat, lng } = locationStore.coordinates;
-    map.value?.flyTo([lat, lng], 15, {
-      duration: 1,
-      easeLinearity: 0.25,
-    });
+    centerOnUser();
   } else {
     try {
       await locationStore.getCurrentPosition();
       if (locationStore.coordinates) {
-        const { lat, lng } = locationStore.coordinates;
-        map.value?.flyTo([lat, lng], 15, {
-          duration: 1,
-          easeLinearity: 0.25,
-        });
+        centerOnUser();
       }
     } catch (error) {
       console.error('Failed to get user location:', error);
@@ -191,7 +213,6 @@ async function handleLocationClick() {
   }
 }
 
-// Add this function to handle user location updates
 function updateUserLocation() {
   if (!map.value || !locationStore.coordinates) return;
 
@@ -205,6 +226,10 @@ function updateUserLocation() {
   // Add new user marker
   userMarker.value = L.marker([lat, lng], { icon: userLocationIcon });
   userMarker.value.addTo(map.value);
+}
+
+function handleCenterMap(routeData) {
+  centerOnRoute(routeData);
 }
 
 watch(
