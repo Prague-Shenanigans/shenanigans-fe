@@ -10,6 +10,13 @@
       </select>
     </div>
 
+    <!-- Add location control button -->
+    <div class="location-control">
+      <q-btn round flat :color="locationStore.isWatching ? 'primary' : 'grey'" icon="my_location" @click="handleLocationClick">
+        <q-tooltip>Center on my location</q-tooltip>
+      </q-btn>
+    </div>
+
     <DynamicPanel ref="panelRef" @close="handlePanelClose">
       <PoisPanel :poi="selectedMarker" @close="handlePanelClose" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
     </DynamicPanel>
@@ -19,23 +26,27 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import L from 'leaflet';
+import { QBtn, QTooltip } from 'quasar';
 import { usePoisStore } from '../../stores/pois.store';
+import { useLocationStore } from '../../stores/location';
 import DynamicPanel from './Panels/DynamicPanel.vue';
 import PoisPanel from './Panels/PoisPanel.vue';
 import '../../css/custom/main.scss';
 
 const mapRef = ref(null);
 const map = ref(null);
-const panelRef = ref(null); // <== ADD THIS
+const panelRef = ref(null);
 const tileLayer = ref(null);
 const gridLayer = ref(null);
 const poiMarkers = ref([]);
+const userMarker = ref(null);
 const selectedMarker = ref(null);
 const selectedStyle = ref('vintage');
 const showGrid = ref(false);
 let mapMoveTimeout = null;
 
 const poisStore = usePoisStore();
+const locationStore = useLocationStore();
 
 const mapStyles = [
   {
@@ -81,6 +92,17 @@ const poiIcons = {
   concert_hall: L.divIcon({ className: 'poi-icon concert_hall', iconSize: [36, 36], iconAnchor: [18, 18] }),
   pub: L.divIcon({ className: 'poi-icon pub', iconSize: [36, 36], iconAnchor: [18, 18] }),
 };
+
+// Update user location icon with a more detailed design
+const userLocationIcon = L.divIcon({
+  className: 'user-location-icon',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  html: `
+    <div class="user-location-dot"></div>
+    <div class="user-location-pulse"></div>
+  `,
+});
 
 function updatePOIs() {
   if (!map.value) return;
@@ -137,11 +159,64 @@ function handleSaveToTrip(poi) {
 
 function handleMarkerSelect(poi) {
   selectedMarker.value = poi;
-  panelRef.value?.setCurrentState(1); // <== CALL CHILD METHOD
+  panelRef.value?.setCurrentState(1);
 }
 
 function handlePanelClose() {
   selectedMarker.value = null;
+}
+
+// Add function to handle location button click
+async function handleLocationClick() {
+  if (!locationStore.isWatching) {
+    // Start continuous updates
+    locationStore.startWatchingPosition({
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 30000, // Update every 30 seconds
+    });
+  } else {
+    // Stop continuous updates
+    locationStore.stopWatchingPosition();
+  }
+
+  // Center map on user location
+  if (locationStore.coordinates) {
+    const { lat, lng } = locationStore.coordinates;
+    map.value?.flyTo([lat, lng], 15, {
+      duration: 1,
+      easeLinearity: 0.25,
+    });
+  } else {
+    try {
+      await locationStore.getCurrentPosition();
+      if (locationStore.coordinates) {
+        const { lat, lng } = locationStore.coordinates;
+        map.value?.flyTo([lat, lng], 15, {
+          duration: 1,
+          easeLinearity: 0.25,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to get user location:', error);
+    }
+  }
+}
+
+// Add this function to handle user location updates
+function updateUserLocation() {
+  if (!map.value || !locationStore.coordinates) return;
+
+  const { lat, lng } = locationStore.coordinates;
+
+  // Remove existing user marker if it exists
+  if (userMarker.value) {
+    userMarker.value.remove();
+  }
+
+  // Add new user marker
+  userMarker.value = L.marker([lat, lng], { icon: userLocationIcon });
+  userMarker.value.addTo(map.value);
 }
 
 watch(
@@ -164,15 +239,37 @@ watch(
   },
 );
 
-onMounted(() => {
+// Modify the onMounted function
+onMounted(async () => {
   if (!mapRef.value) return;
 
+  // Initialize map with default center
   map.value = L.map(mapRef.value).setView([50.0755, 14.4378], 13);
   updateMapStyle();
   map.value.on('moveend', handleMapMove);
   map.value.on('zoomend', handleMapMove);
   updatePOIs();
+
+  // Get user location and center map
+  try {
+    await locationStore.getCurrentPosition();
+    if (locationStore.coordinates) {
+      const { lat, lng } = locationStore.coordinates;
+      map.value.setView([lat, lng], 13);
+      updateUserLocation();
+    }
+  } catch (error) {
+    console.error('Failed to get user location:', error);
+  }
 });
+
+// Add watch for location changes
+watch(
+  () => locationStore.coordinates,
+  () => {
+    updateUserLocation();
+  },
+);
 
 onUnmounted(() => {
   if (map.value) {
@@ -280,6 +377,56 @@ onUnmounted(() => {
     display: flex;
     gap: 8px;
     justify-content: center;
+  }
+}
+
+.location-control {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+}
+
+// Update user location icon styles
+:deep(.user-location-icon) {
+  .user-location-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #4285f4;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2px #4285f4;
+  }
+
+  .user-location-pulse {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(66, 133, 244, 0.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s infinite;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
   }
 }
 </style>
