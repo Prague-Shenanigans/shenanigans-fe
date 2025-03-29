@@ -10,11 +10,8 @@
       </select>
     </div>
 
-    <DynamicPanel>
-      <div>
-        <h3>{{ 'title' }}</h3>
-        <p>{{ 'selectedMarker.description' }}</p>
-      </div>
+    <DynamicPanel v-if="selectedMarker">
+      <PoisPanel :poi="selectedMarker" @close="selectedMarker = null" @get-directions="handleGetDirections" @save-to-trip="handleSaveToTrip" />
     </DynamicPanel>
   </div>
 </template>
@@ -24,6 +21,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import L from 'leaflet';
 import { usePoisStore } from '../../stores/pois.store';
 import DynamicPanel from './Panels/DynamicPanel.vue';
+import PoisPanel from './Panels/PoisPanel.vue';
 import '../../css/custom/main.scss';
 
 const mapRef = ref(null);
@@ -126,6 +124,16 @@ function handleMapMove() {
   mapMoveTimeout = window.setTimeout(() => updatePOIs(), 500);
 }
 
+function handleGetDirections(poi) {
+  // TODO: Implement directions functionality
+  console.log('Getting directions to:', poi.title);
+}
+
+function handleSaveToTrip(poi) {
+  // TODO: Implement save to trip functionality
+  console.log('Saving to trip:', poi.title);
+}
+
 watch(
   () => poisStore.visiblePois,
   (pois) => {
@@ -165,15 +173,103 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .map-wrapper {
   position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.map-container {
   height: 100%;
   width: 100%;
 }
 
-.map-container {
-  height: 100vh;
+.control-group {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.control-group select {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+}
+
+// POI Panel Styles
+.poi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
+
+  h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.poi-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  .poi-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .poi-description {
+    p {
+      margin: 0;
+      line-height: 1.5;
+      color: #666;
+    }
+  }
+}
+
+.poi-secondary {
+  width: 100%;
+
+  .poi-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+
+      .q-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .poi-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
 }
 </style>

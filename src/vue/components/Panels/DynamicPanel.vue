@@ -1,7 +1,30 @@
 <template>
   <div class="dynamic-panel" :class="`state-${currentState}`" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <div class="panel-content">
-      <slot />
+      <!-- Header Section -->
+      <div class="panel-header">
+        <div class="drag-handle"></div>
+        <slot name="header">
+          <div class="default-header">
+            <h3>Default Header</h3>
+          </div>
+        </slot>
+      </div>
+
+      <!-- Primary Content Section -->
+      <div class="panel-primary">
+        <slot name="primary">
+          <div class="default-primary">Primary Content</div>
+        </slot>
+      </div>
+
+      <!-- Secondary Content Section -->
+      <div class="panel-secondary">
+        <slot name="secondary">
+          <div class="default-secondary">Secondary Content</div>
+        </slot>
+      </div>
+
       <div class="state-indicator">State: {{ currentState }}</div>
     </div>
   </div>
@@ -16,7 +39,6 @@ let currentY = 0;
 let deltaY = 0;
 
 function handleTouchStart(e) {
-  console.log('e :>> ', e);
   startY = e.touches[0].clientY;
 }
 
@@ -53,7 +75,6 @@ function handleTouchEnd() {
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   z-index: 1000;
-  padding: 16px;
   transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 
@@ -79,13 +100,61 @@ function handleTouchEnd() {
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding: 16px;
+}
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+
+  .drag-handle {
+    width: 40px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+
+  .default-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.panel-primary {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.panel-secondary {
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 
 .state-indicator {
   margin-top: 8px;
   font-size: 14px;
   color: #666;
+  text-align: center;
 }
 </style>
