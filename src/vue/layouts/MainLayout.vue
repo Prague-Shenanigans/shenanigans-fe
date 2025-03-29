@@ -54,7 +54,8 @@ const logout = () => {
 }
 
 .page-container {
-  height: calc(100vh); // Subtract header height
+  height: 100%; // Subtract header height
   overflow: hidden;
+  overflow-y: auto;
 }
 </style>
