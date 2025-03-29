@@ -10,7 +10,7 @@
     <template #primary v-if="poi">
       <div class="poi-primary">
         <div class="poi-image">
-          <img :src="poi.image_url" :alt="poi.title" />
+          <img :src="poi.header_image_url" :alt="poi.title" />
         </div>
         <div class="poi-description">
           <p>{{ poi.description }}</p>
