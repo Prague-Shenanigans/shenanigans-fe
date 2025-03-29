@@ -4,7 +4,7 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
-        <q-toolbar-title>My App</q-toolbar-title>
+        <q-toolbar-title>Prague Shenanigans</q-toolbar-title>
         <q-btn flat dense icon="logout" @click="logout" />
       </q-toolbar>
     </q-header>
