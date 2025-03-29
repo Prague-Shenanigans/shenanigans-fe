@@ -23,7 +23,7 @@ export const useLocationStore = defineStore('location', {
 
   actions: {
     async getCurrentPosition() {
-      const { location, error, isLoading, getCurrentPosition } = useLocation();
+      const { location, getCurrentPosition } = useLocation();
 
       try {
         this.isLoading = true;
@@ -38,7 +38,7 @@ export const useLocationStore = defineStore('location', {
     },
 
     startWatchingPosition(options = {}) {
-      const { location, error, startWatchingPosition } = useLocation();
+      const { location, startWatchingPosition } = useLocation();
 
       this.isWatching = true;
       this.error = null;
