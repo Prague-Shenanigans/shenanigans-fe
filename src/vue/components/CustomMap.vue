@@ -77,8 +77,10 @@ function updateMapStyle() {
   if (tileLayer.value) map.value.removeLayer(tileLayer.value);
   if (gridLayer.value) map.value.removeLayer(gridLayer.value);
 
-  tileLayer.value = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
+  // Use CARTO Voyager style which maintains colors but has a cleaner look
+  tileLayer.value = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
   });
   tileLayer.value.addTo(map.value);
 
