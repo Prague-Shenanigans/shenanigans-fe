@@ -1,0 +1,65 @@
+// Colors
+$color-primary: #8b4513;
+$color-secondary: #d2691e;
+$color-accent: #cd853f;
+$color-background: #f5f5dc;
+$color-text: #2c1810;
+$color-text-light: #8b7355;
+$color-border: #deb887;
+$color-overlay: rgba(139, 69, 19, 0.1);
+$color-white: #ffffff;
+
+// POI Colors
+$color-landmark: #8b4513;
+$color-bridge: #5ce8e5;
+$color-club: #800080;
+$color-museum: #daa520;
+$color-park: #d1da32;
+$color-restaurant: #cd853f;
+$color-cafe: #8b4513;
+$color-bar: #8b0000;
+
+// POI Colors Map
+$poi-colors: (
+  'restaurant': #e74c3c,
+  'cafe': #d35400,
+  'bar': #c0392b,
+  'hotel': #2980b9,
+  'museum': #8e44ad,
+  'park': #27ae60,
+  'shopping': #f39c12,
+  'transport': #16a085,
+  'landmark': #e67e22,
+  'bridge': #3498db,
+  'club': #9b59b6,
+  'monument': #d35400,
+  'square': #e74c3c,
+  'concert_hall': #8e44ad,
+  'underground_club': #2c3e50,
+  'pub': #c0392b,
+);
+
+// Sizes
+$icon-size: 36px;
+$icon-padding: 6px;
+$marker-size: 30px;
+
+// Shadows
+$shadow-default: 2px 2px 2px rgba(0, 0, 0, 0.3);
+$shadow-hover: 0 0 15px rgba(0, 0, 0, 0.3);
+
+// Transitions
+$transition-default: all 0.2s ease-out;
+
+// Border radius
+$border-radius: 4px;
+$border-radius-circle: 50%;
+
+// Typography
+$font-heading: 'Playfair Display', serif;
+$font-body: 'Source Sans Pro', sans-serif;
+$font-size-base: 16px;
+$font-size-small: 14px;
+$font-size-large: 18px;
+$font-size-xlarge: 24px;
+$font-size-xxlarge: 32px;

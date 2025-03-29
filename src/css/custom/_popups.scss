@@ -1,0 +1,35 @@
+.vintage-popup {
+  font-family: 'Georgia', serif;
+  color: $color-text;
+  background: $color-background;
+  border: 1px solid $color-primary;
+  border-radius: $border-radius;
+  padding: 10px;
+  box-shadow: $shadow-default;
+
+  h3 {
+    margin: 0 0 8px 0;
+    color: $color-primary;
+    font-size: 16px;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
+
+.poi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  background: $color-primary;
+  color: $color-background;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+}

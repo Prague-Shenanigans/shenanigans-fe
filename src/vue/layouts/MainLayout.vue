@@ -1,16 +1,16 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="main-layout">
     <!-- ===================== HEADER ===================== -->
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
-        <q-toolbar-title>My App</q-toolbar-title>
+        <q-toolbar-title>Prague Shenanigans</q-toolbar-title>
         <q-btn flat dense icon="logout" @click="logout" />
       </q-toolbar>
     </q-header>
 
     <!-- ===================== DRAWER ===================== -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
         <q-item v-ripple to="/home" clickable>
           <q-item-section avatar><q-icon name="home" /></q-item-section>
@@ -25,7 +25,7 @@
     </q-drawer>
 
     <!-- ===================== PAGE CONTAINER ===================== -->
-    <q-page-container>
+    <q-page-container class="page-container">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -45,3 +45,17 @@ const logout = () => {
   router.push('/auth/login');
 };
 </script>
+
+<style lang="scss" scoped>
+.main-layout {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.page-container {
+  height: 100%; // Subtract header height
+  overflow: hidden;
+  overflow-y: auto;
+}
+</style>

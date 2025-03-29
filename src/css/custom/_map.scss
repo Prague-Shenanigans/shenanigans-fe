@@ -1,0 +1,130 @@
+// Base Map Styles
+.vintage-map {
+  filter: sepia(30%) contrast(110%) brightness(95%);
+
+  .leaflet-tile {
+    filter: sepia(30%) contrast(110%) brightness(95%);
+  }
+}
+
+// Water Features
+.vintage-map .leaflet-tile[src*='water'] {
+  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(180deg) saturate(150%);
+}
+
+// Parks and Natural Areas
+.vintage-map .leaflet-tile[src*='park'],
+.vintage-map .leaflet-tile[src*='forest'],
+.vintage-map .leaflet-tile[src*='nature_reserve'] {
+  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(90deg) saturate(120%);
+}
+
+// Roads and Streets
+.vintage-map .leaflet-tile[src*='highway'],
+.vintage-map .leaflet-tile[src*='road'] {
+  filter: sepia(30%) contrast(120%) brightness(90%);
+}
+
+// Buildings
+.vintage-map .leaflet-tile[src*='building'] {
+  filter: sepia(30%) contrast(110%) brightness(85%);
+}
+
+// Paper Texture Overlay
+.paper-texture {
+  mix-blend-mode: multiply;
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+// Grid Overlay
+.grid-overlay {
+  mix-blend-mode: multiply;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+// Map Container
+.map-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+// Hide Leaflet zoom controls
+.leaflet-control-container {
+  .leaflet-control-zoom {
+    display: none !important;
+  }
+}
+
+// Map Controls
+.map-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.control-group {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+// Info Panel
+.info-panel {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-width: 300px;
+}
+
+// Loading Indicator
+.loading-indicator {
+  color: $color-text;
+  font-family: 'Georgia', serif;
+  font-size: 12px;
+  margin: 4px;
+  padding: 4px;
+  background: rgba($color-background, 0.9);
+  border-radius: 3px;
+  text-align: center;
+}
+
+// Ensure Leaflet controls stay within bounds
+.leaflet-control-container {
+  .leaflet-control {
+    margin: 10px;
+  }
+}
+
+// Prevent map from overflowing
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}

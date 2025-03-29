@@ -1,0 +1,36 @@
+.vintage-controls {
+  background: rgba($color-background, 0.95);
+  border: 2px solid $color-primary;
+  border-radius: $border-radius;
+  box-shadow: $shadow-default;
+  padding: 8px;
+  backdrop-filter: blur(4px);
+
+  select,
+  button {
+    background: rgba($color-white, 0.9);
+    border: 1px solid $color-primary;
+    border-radius: 3px;
+    color: $color-text;
+    font-family: 'Georgia', serif;
+    padding: 4px 8px;
+    margin: 4px;
+    transition: $transition-default;
+
+    &:hover {
+      background: darken($color-background, 5%);
+      transform: translateY(-1px);
+      box-shadow: $shadow-default;
+    }
+  }
+
+  label {
+    color: $color-text;
+    font-family: 'Georgia', serif;
+    font-size: 12px;
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
