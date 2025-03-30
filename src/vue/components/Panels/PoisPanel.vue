@@ -31,7 +31,7 @@
 
     <template #primary v-if="poi">
       <div class="poi-content">
-        <div class="poi-image">
+        <div v-if="poi.header_image_url" class="poi-image">
           <img :src="poi.header_image_url" :alt="poi.title" />
         </div>
         <div class="poi-details">
