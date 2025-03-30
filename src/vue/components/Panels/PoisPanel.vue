@@ -215,7 +215,6 @@ defineExpose({
   gap: 14px;
   width: 100%;
   height: 100%;
-  overflow-y: auto;
   background: #ffffff; // White background for content
 }
 

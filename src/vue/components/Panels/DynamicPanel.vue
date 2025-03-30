@@ -12,7 +12,7 @@
       </div>
 
       <!-- Primary Content Section -->
-      <div class="panel-primary">
+      <div ref="primaryRef" class="panel-primary" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
         <slot name="primary">
           <div class="default-primary">Primary Content</div>
         </slot>
@@ -27,12 +27,14 @@ import { onClickOutside } from '@vueuse/core';
 
 const emit = defineEmits(['close']);
 
+const panelRef = ref(null);
+const primaryRef = ref(null);
 const currentState = ref(0);
+const isAtTop = ref(true); // dynamically updated from scroll
+
 let startY = 0;
 let currentY = 0;
 let deltaY = 0;
-
-const panelRef = ref(null);
 
 function setCurrentState(value) {
   currentState.value = value;
@@ -48,12 +50,32 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd() {
-  if (deltaY < -30 && currentState.value < 3) {
+  const isSwipingUp = deltaY < -30;
+  const isSwipingDown = deltaY > 30;
+
+  console.log('deltaY:', deltaY.toFixed(1), '| isAtTop:', isAtTop.value);
+
+  if (isSwipingUp && currentState.value < 3) {
     currentState.value++;
-  } else if (deltaY > 30 && currentState.value > 0) {
+  } else if (isSwipingDown && isAtTop.value && currentState.value > 0) {
     currentState.value--;
   }
+
   deltaY = 0;
+}
+
+function handleScroll() {
+  const el = primaryRef.value;
+  if (!el) return;
+
+  const { scrollTop } = el;
+  const { scrollHeight } = el;
+  const { clientHeight } = el;
+
+  const scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
+  isAtTop.value = scrollPercent <= 0.1; // allow slight float margin
+
+  console.log(`Scroll position: ${scrollPercent.toFixed(1)}%`);
 }
 
 onClickOutside(panelRef, () => {
@@ -144,14 +166,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   overflow-y: auto;
-}
-
-.state-indicator {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #666;
-  text-align: center;
+  -webkit-overflow-scrolling: touch;
 }
 </style>
