@@ -18,10 +18,10 @@
             </div>
           </div>
           <p class="description">{{ poi.description }}</p>
-          <div v-if="poi.tags && poi.tags.length" class="tags-container">
+          <div v-if="poi.category && poi.category.length" class="tags-container">
             <div class="tags-list">
-              <div v-for="tag in poi.tags" :key="tag.id" class="tag">
-                {{ tag.name }}
+              <div v-for="cat in poi.category" :key="cat.id" class="tag">
+                {{ cat.name }}
               </div>
             </div>
           </div>
@@ -44,9 +44,12 @@
               <q-icon name="schedule" />
               <span>{{ poi.opening_hours }}</span>
             </div>
-            <div class="detail-item">
-              <q-icon name="category" />
-              <span>{{ poi.category?.name || 'Uncategorized' }}</span>
+            <div v-if="poi.tags && poi.tags.length" class="detail-item tags-row">
+              <div class="tags-list">
+                <div v-for="tag in poi.tags" :key="tag.id" class="tag">
+                  {{ tag.name }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -220,7 +223,7 @@ defineExpose({
     }
 
     .tags-container {
-      padding: 0 16px 8px;
+      padding: 0 16px 14px;
 
       .tags-list {
         display: flex;
@@ -286,6 +289,25 @@ defineExpose({
       .q-icon {
         font-size: 20px;
         color: #666666;
+      }
+
+      &.tags-row {
+        align-items: flex-start;
+
+        .tags-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+
+          .tag {
+            background: var(--q-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1.2;
+          }
+        }
       }
     }
   }
