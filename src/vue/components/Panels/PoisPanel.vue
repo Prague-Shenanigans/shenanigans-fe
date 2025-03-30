@@ -5,6 +5,14 @@
         <div class="header-content">
           <h3>{{ poi.title }}</h3>
           <p class="description">{{ poi.description }}</p>
+          <div class="actions-column">
+            <q-btn round flat color="primary" icon="directions" class="action-btn" @click="handleNavigate">
+              <q-tooltip>Get directions</q-tooltip>
+            </q-btn>
+            <q-btn round flat color="secondary" icon="bookmark" class="action-btn" @click="handleSaveToTrip">
+              <q-tooltip>Save to trip</q-tooltip>
+            </q-btn>
+          </div>
         </div>
         <q-btn flat round icon="close" @click="handleClose" />
       </div>
@@ -29,10 +37,6 @@
               <q-icon name="category" />
               <span>{{ poi.category?.name || 'Uncategorized' }}</span>
             </div>
-          </div>
-          <div class="actions-column">
-            <q-btn color="primary" icon="directions" label="Navigate" @click="handleNavigate" />
-            <q-btn color="secondary" label="Save to Trip" @click="handleSaveToTrip" />
           </div>
         </div>
         <div class="poi-markdown">
@@ -143,11 +147,11 @@ defineExpose({
   height: auto;
   padding: 0 0 0 16px;
   gap: 16px;
-  background: #ffffff; // White background for header
+  background: #ffffff;
 
   .header-content {
     flex: 1;
-    min-width: 0; // Prevents text overflow
+    min-width: 0;
 
     h3 {
       margin: 0 0 8px 0;
@@ -158,11 +162,35 @@ defineExpose({
     }
 
     .description {
-      margin: 0;
+      margin: 0 0 16px 0;
       font-size: 0.95rem;
       line-height: 1.4;
       color: rgba(0, 0, 0, 0.9);
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .actions-column {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      margin-top: 8px;
+
+      .action-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .q-icon {
+          font-size: 20px;
+        }
+      }
     }
   }
 
@@ -184,7 +212,6 @@ defineExpose({
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding-right: 16px;
   background: #ffffff; // White background for content
 }
 
@@ -226,17 +253,6 @@ defineExpose({
         font-size: 20px;
         color: #666666;
       }
-    }
-  }
-
-  .actions-column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    justify-content: center;
-
-    .q-btn {
-      min-width: 120px;
     }
   }
 }

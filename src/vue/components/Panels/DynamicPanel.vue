@@ -113,7 +113,6 @@ defineExpose({
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
   flex-shrink: 0;
   padding: 16px;
 
@@ -140,13 +139,13 @@ defineExpose({
 }
 
 .panel-primary {
-  margin-bottom: 16px;
+  margin: 0;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow-y: auto;
-  padding: 16px;
 }
 
 .state-indicator {
