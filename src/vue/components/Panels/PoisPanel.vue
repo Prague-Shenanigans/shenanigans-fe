@@ -160,22 +160,27 @@ defineExpose({
     .header-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       width: 100%;
       padding: 8px 16px;
+      gap: 16px;
 
       h3 {
         margin: 0;
         font-size: 1.2rem;
         font-weight: 600;
         color: #000000;
-        white-space: nowrap;
+        flex: 1;
+        min-width: 0;
+        word-wrap: break-word;
+        line-height: 1.3;
       }
 
       .actions-column {
         display: flex;
         flex-direction: row;
         gap: 8px;
+        flex-shrink: 0;
 
         .action-btn {
           width: 36px;
