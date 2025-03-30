@@ -3,18 +3,22 @@
     <template #header v-if="poi">
       <div class="poi-header" :style="headerStyle">
         <div class="header-content">
-          <h3>{{ poi.title }}</h3>
-          <p class="description">{{ poi.description }}</p>
-          <div class="actions-column">
-            <q-btn round flat color="primary" icon="directions" class="action-btn" @click="handleNavigate">
-              <q-tooltip>Get directions</q-tooltip>
-            </q-btn>
-            <q-btn round flat color="secondary" icon="bookmark" class="action-btn" @click="handleSaveToTrip">
-              <q-tooltip>Save to trip</q-tooltip>
-            </q-btn>
+          <div class="header-top">
+            <h3>{{ poi.title }}</h3>
+            <div class="actions-column">
+              <q-btn round flat color="primary" icon="directions" class="action-btn" @click="handleNavigate">
+                <q-tooltip>Get directions</q-tooltip>
+              </q-btn>
+              <q-btn round flat color="secondary" icon="bookmark" class="action-btn" @click="handleSaveToTrip">
+                <q-tooltip>Save to trip</q-tooltip>
+              </q-btn>
+              <q-btn round flat color="primary" icon="share" class="action-btn" @click="handleShare">
+                <q-tooltip>Share</q-tooltip>
+              </q-btn>
+            </div>
           </div>
+          <p class="description">{{ poi.description }}</p>
         </div>
-        <q-btn flat round icon="close" @click="handleClose" />
       </div>
     </template>
 
@@ -144,63 +148,64 @@ defineExpose({
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  height: auto;
-  padding: 0 0 0 16px;
-  gap: 16px;
   background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
   .header-content {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 
-    h3 {
-      margin: 0 0 8px 0;
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #000000;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .description {
-      margin: 0 0 16px 0;
-      font-size: 0.95rem;
-      line-height: 1.4;
-      color: rgba(0, 0, 0, 0.9);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .actions-column {
+    .header-top {
       display: flex;
-      flex-direction: row;
-      gap: 12px;
-      margin-top: 8px;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 8px 16px;
 
-      .action-btn {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
+      h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #000000;
+        white-space: nowrap;
+      }
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
+      .actions-column {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
 
-        .q-icon {
-          font-size: 20px;
+        .action-btn {
+          width: 36px;
+          height: 36px;
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+          }
+
+          .q-icon {
+            font-size: 18px;
+          }
         }
       }
     }
-  }
 
-  .q-btn {
-    color: #000000;
-    background: rgba(255, 255, 255, 0.1);
-    flex-shrink: 0;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
+    .description {
+      margin: 0;
+      padding: 0 16px 8px;
+      font-size: 0.9rem;
+      line-height: 1.3;
+      color: rgba(0, 0, 0, 0.7);
+      overflow: visible;
+      white-space: normal;
+      word-wrap: break-word;
     }
   }
 }
