@@ -69,8 +69,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'get-directions', 'save-to-trip', 'center-map']);
 const panelRef = ref(null);
-const locationStore = useLocationStore();
 const isChangingPoi = ref(false);
+const locationStore = useLocationStore();
 
 // Watch for POI changes
 watch(
@@ -98,36 +98,35 @@ function handleSaveToTrip() {
 }
 
 async function handleNavigate() {
-  if (!locationStore.coordinates) {
-    try {
+  try {
+    if (!locationStore.coordinates) {
       await locationStore.getCurrentPosition();
-    } catch (error) {
-      console.error('Failed to get user location:', error);
-      return;
     }
+
+    const { lat: startLat, lng: startLng } = locationStore.coordinates;
+    const { latitude: endLat, longitude: endLng } = props.poi;
+
+    // Set panel state to 2 (half height)
+    panelRef.value?.setCurrentState(2);
+
+    // Emit both the directions and center-map events
+    emit('get-directions', {
+      start: { lat: startLat, lng: startLng },
+      end: { lat: endLat, lng: endLng },
+    });
+    emit('center-map', {
+      lat: (startLat + endLat) / 2,
+      lng: (startLng + endLng) / 2,
+      bounds: {
+        north: Math.max(startLat, endLat),
+        south: Math.min(startLat, endLat),
+        east: Math.max(startLng, endLng),
+        west: Math.min(startLng, endLng),
+      },
+    });
+  } catch (error) {
+    console.error('Failed to get user location:', error);
   }
-
-  const { lat: startLat, lng: startLng } = locationStore.coordinates;
-  const { latitude: endLat, longitude: endLng } = props.poi;
-
-  // Set panel state to 2 (half height)
-  panelRef.value?.setCurrentState(2);
-
-  // Emit both the directions and center-map events
-  emit('get-directions', {
-    start: { lat: startLat, lng: startLng },
-    end: { lat: endLat, lng: endLng },
-  });
-  emit('center-map', {
-    lat: (startLat + endLat) / 2,
-    lng: (startLng + endLng) / 2,
-    bounds: {
-      north: Math.max(startLat, endLat),
-      south: Math.min(startLat, endLat),
-      east: Math.max(startLng, endLng),
-      west: Math.min(startLng, endLng),
-    },
-  });
 }
 
 defineExpose({

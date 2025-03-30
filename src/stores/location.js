@@ -1,60 +1,40 @@
 import { defineStore } from 'pinia';
-import { watch } from 'vue';
-import { useLocation } from '../composables/useLocation';
+import { ref, computed } from 'vue';
+import { Geolocation } from '@capacitor/geolocation';
 
-export const useLocationStore = defineStore('location', {
-  state: () => ({
-    location: null,
-    error: null,
-    isLoading: false,
-    isWatching: false,
-  }),
+export const useLocationStore = defineStore('location', () => {
+  const position = ref(null);
+  const error = ref(null);
+  const isLoading = ref(false);
 
-  getters: {
-    hasLocation: (state) => !!state.location,
-    coordinates: (state) =>
-      state.location
-        ? {
-            lat: state.location.latitude,
-            lng: state.location.longitude,
-          }
-        : null,
-  },
+  const coordinates = computed(() => {
+    if (!position.value) return null;
+    return {
+      lat: position.value.coords.latitude,
+      lng: position.value.coords.longitude,
+    };
+  });
 
-  actions: {
-    async getCurrentPosition() {
-      const { location, error, isLoading, getCurrentPosition } = useLocation();
+  async function getCurrentPosition() {
+    try {
+      isLoading.value = true;
+      error.value = null;
+      const positionData = await Geolocation.getCurrentPosition();
+      position.value = positionData;
+      return positionData;
+    } catch (err) {
+      error.value = err.message;
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
-      this.isLoading = isLoading.value;
-      this.error = error.value;
-
-      try {
-        await getCurrentPosition();
-        this.location = location.value;
-      } catch (err) {
-        this.error = err.message;
-      } finally {
-        this.isLoading = false;
-      }
-    },
-
-    startWatchingPosition(options = {}) {
-      const { location, error, startWatchingPosition } = useLocation();
-
-      this.isWatching = true;
-      this.error = error.value;
-
-      startWatchingPosition(options);
-
-      watch(location, (newLocation) => {
-        this.location = newLocation;
-      });
-    },
-
-    stopWatchingPosition() {
-      const { stopWatchingPosition } = useLocation();
-      stopWatchingPosition();
-      this.isWatching = false;
-    },
-  },
+  return {
+    position,
+    error,
+    isLoading,
+    coordinates,
+    getCurrentPosition,
+  };
 });

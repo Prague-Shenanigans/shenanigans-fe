@@ -3,8 +3,8 @@
     <div ref="mapRef" class="map-container"></div>
 
     <div class="location-control">
-      <q-btn round flat :color="locationStore.isWatching ? 'primary' : 'grey'" icon="my_location" @click="handleLocationClick">
-        <q-tooltip>Center on my location</q-tooltip>
+      <q-btn round flat color="grey" icon="my_location" @click="handleLocationClick">
+        <q-tooltip>Get my location</q-tooltip>
       </q-btn>
     </div>
 
@@ -113,26 +113,6 @@ function centerOnUser() {
   map.value.setView([lat, lng], map.value.getZoom(), { animate: true, duration: 0.5 });
 }
 
-async function handleLocationClick() {
-  try {
-    // Always try to get the current location first
-    await locationStore.getCurrentPosition();
-
-    if (locationStore.coordinates) {
-      centerOnUser();
-    }
-
-    // Toggle watching after centering
-    if (!locationStore.isWatching) {
-      locationStore.startWatchingPosition({ enableHighAccuracy: true });
-    } else {
-      locationStore.stopWatchingPosition();
-    }
-  } catch (error) {
-    console.error('Failed to get user location:', error);
-  }
-}
-
 function updateUserLocation() {
   if (!map.value || !locationStore.coordinates) return;
   const { lat, lng } = locationStore.coordinates;
@@ -141,8 +121,39 @@ function updateUserLocation() {
   userMarker.value.addTo(map.value);
 }
 
+async function handleLocationClick() {
+  try {
+    await locationStore.getCurrentPosition();
+    updateUserLocation();
+    centerOnUser();
+  } catch (error) {
+    console.error('Failed to get user location:', error);
+  }
+}
+
 function handleGetDirections(routeData) {
-  // unchanged, uses OSRM API
+  if (!map.value) return;
+
+  // Remove existing route layer if any
+  if (routeLayer.value) {
+    map.value.removeLayer(routeLayer.value);
+  }
+
+  // Create new route layer
+  routeLayer.value = L.polyline(routeData.coordinates, {
+    color: '#4285f4',
+    weight: 4,
+    opacity: 0.8,
+    dashArray: '10, 10',
+  }).addTo(map.value);
+
+  // Fit map to show the entire route
+  if (routeData.bounds) {
+    map.value.fitBounds(routeData.bounds, {
+      padding: [50, 50],
+      duration: 0.5,
+    });
+  }
 }
 
 function handleSaveToTrip(poi) {
@@ -193,7 +204,7 @@ watch(
 );
 
 watch(
-  () => locationStore.coordinates,
+  () => locationStore.position,
   () => {
     updateUserLocation();
   },

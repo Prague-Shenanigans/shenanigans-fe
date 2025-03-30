@@ -89,15 +89,14 @@ module.exports = configure((ctx) => ({
     hideSplashscreen: true,
   },
 
-  // ✅ Mobile platform permissions (merged safely)
-  // Add inside root config — not as second extras
+  // Add location permissions
   extrasCapacitor: {
     android: {
       permissions: ['android.permission.ACCESS_FINE_LOCATION', 'android.permission.ACCESS_COARSE_LOCATION'],
     },
     ios: {
       plist: {
-        NSLocationWhenInUseUsageDescription: 'This app needs your location to show your position on the map.',
+        NSLocationWhenInUseUsageDescription: 'This app needs your location to show your position on the map and provide navigation.',
       },
     },
   },
