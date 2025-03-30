@@ -114,21 +114,22 @@ function centerOnUser() {
 }
 
 async function handleLocationClick() {
-  if (!locationStore.isWatching) {
-    locationStore.startWatchingPosition({ enableHighAccuracy: true });
-  } else {
-    locationStore.stopWatchingPosition();
-  }
+  try {
+    // Always try to get the current location first
+    await locationStore.getCurrentPosition();
 
-  if (locationStore.coordinates) {
-    centerOnUser();
-  } else {
-    try {
-      await locationStore.getCurrentPosition();
-      if (locationStore.coordinates) centerOnUser();
-    } catch (error) {
-      console.error('Failed to get user location:', error);
+    if (locationStore.coordinates) {
+      centerOnUser();
     }
+
+    // Toggle watching after centering
+    if (!locationStore.isWatching) {
+      locationStore.startWatchingPosition({ enableHighAccuracy: true });
+    } else {
+      locationStore.stopWatchingPosition();
+    }
+  } catch (error) {
+    console.error('Failed to get user location:', error);
   }
 }
 

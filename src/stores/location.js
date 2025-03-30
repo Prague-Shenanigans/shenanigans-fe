@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { watch } from 'vue';
 import { useLocation } from '../composables/useLocation';
 
 export const useLocationStore = defineStore('location', {
