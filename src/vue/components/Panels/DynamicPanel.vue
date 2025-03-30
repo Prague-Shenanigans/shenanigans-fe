@@ -113,7 +113,7 @@ defineExpose({
   }
 
   &.state-1 {
-    height: 20vh;
+    height: 23vh;
   }
 
   &.state-2 {

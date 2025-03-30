@@ -18,6 +18,13 @@
             </div>
           </div>
           <p class="description">{{ poi.description }}</p>
+          <div v-if="poi.tags && poi.tags.length" class="tags-container">
+            <div class="tags-list">
+              <div v-for="tag in poi.tags" :key="tag.id" class="tag">
+                {{ tag.name }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </template>
@@ -210,6 +217,25 @@ defineExpose({
       overflow: visible;
       white-space: normal;
       word-wrap: break-word;
+    }
+
+    .tags-container {
+      padding: 0 16px 8px;
+
+      .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .tag {
+          background: #f0f0f0;
+          color: #666;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.8rem;
+          line-height: 1.2;
+        }
+      }
     }
   }
 }
