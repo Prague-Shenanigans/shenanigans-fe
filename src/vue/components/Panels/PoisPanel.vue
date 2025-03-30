@@ -1,7 +1,7 @@
 <template>
   <DynamicPanel ref="panelRef" @close="handleClose">
     <template #header v-if="poi">
-      <div class="poi-header" :style="headerStyle">
+      <div class="poi-header">
         <div class="header-content">
           <div class="header-top">
             <h3>{{ poi.title }}</h3>
@@ -62,16 +62,6 @@ const props = defineProps({
   poi: {
     type: Object,
     required: true,
-    validator: (value) =>
-      value &&
-      typeof value.title === 'string' &&
-      typeof value.description === 'string' &&
-      typeof value.image_url === 'string' &&
-      typeof value.header_image_url === 'string' &&
-      typeof value.address === 'string' &&
-      typeof value.opening_hours === 'string' &&
-      typeof value.category === 'string' &&
-      typeof value.markdown_content === 'string',
   },
 });
 
@@ -135,6 +125,15 @@ async function handleNavigate() {
   } catch (error) {
     console.error('Failed to get user location:', error);
   }
+}
+
+function handleShare() {
+  const shareData = {
+    title: props.poi.title,
+    text: props.poi.description,
+    url: window.location.href,
+  };
+  navigator.share(shareData);
 }
 
 defineExpose({
