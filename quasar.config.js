@@ -1,25 +1,15 @@
 /* eslint-env node */
 
-/*
- * This file runs in a Node context (it's NOT transpiled by Babel), so use only
- * the ES6 features that are supported by your Node version. https://node.green/
- */
-
-/* eslint func-names: 0 */
-/* eslint global-require: 0 */
-
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 const svgLoader = require('vite-svg-loader');
 
 module.exports = configure((ctx) => ({
-  // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
-  // preFetch: true,
-
   boot: ['i18n', 'axios', 'icons'],
 
   css: ['app.scss'],
 
+  // ✅ Merge your icon fonts here
   extras: ['roboto-font', 'material-icons', 'material-icons-outlined'],
 
   build: {
@@ -27,9 +17,8 @@ module.exports = configure((ctx) => ({
       browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
       node: 'node20',
     },
-
     vueRouterMode: 'history',
-
+    publicPath: '', // ✅ important for Capacitor to load fonts/assets
     vitePlugins: [
       [
         '@intlify/vite-plugin-vue-i18n',
@@ -100,14 +89,23 @@ module.exports = configure((ctx) => ({
     hideSplashscreen: true,
   },
 
+  // ✅ Mobile platform permissions (merged safely)
+  // Add inside root config — not as second extras
+  extrasCapacitor: {
+    android: {
+      permissions: ['android.permission.ACCESS_FINE_LOCATION', 'android.permission.ACCESS_COARSE_LOCATION'],
+    },
+    ios: {
+      plist: {
+        NSLocationWhenInUseUsageDescription: 'This app needs your location to show your position on the map.',
+      },
+    },
+  },
+
   electron: {
     inspectPort: 5858,
     bundler: 'packager',
-
-    packager: {
-      // macOS/Windows settings here if needed
-    },
-
+    packager: {},
     builder: {
       appId: 'prague-shenanigans',
     },

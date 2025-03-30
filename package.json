@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@capacitor/android": "^7.1.0",
+    "@capacitor/geolocation": "^7.1.1",
     "@intlify/vue-i18n-bridge": "^1.1.0",
     "@quasar/extras": "^1.16.4",
     "@vueuse/core": "^13.0.0",

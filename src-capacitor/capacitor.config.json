@@ -1,5 +1,8 @@
 {
   "appId": "com.pavel.pragueshenanigans",
   "appName": "Prague Shenanigans",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "Geolocation": {}
+  }
 }

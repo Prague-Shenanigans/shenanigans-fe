@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { watch } from 'vue';
 import { useLocation } from '../composables/useLocation';
 
 export const useLocationStore = defineStore('location', {
@@ -23,11 +22,12 @@ export const useLocationStore = defineStore('location', {
 
   actions: {
     async getCurrentPosition() {
-      const { location, getCurrentPosition } = useLocation();
+      const { location, error, isLoading, getCurrentPosition } = useLocation();
+
+      this.isLoading = isLoading.value;
+      this.error = error.value;
 
       try {
-        this.isLoading = true;
-        this.error = null;
         await getCurrentPosition();
         this.location = location.value;
       } catch (err) {
@@ -38,14 +38,13 @@ export const useLocationStore = defineStore('location', {
     },
 
     startWatchingPosition(options = {}) {
-      const { location, startWatchingPosition } = useLocation();
+      const { location, error, startWatchingPosition } = useLocation();
 
       this.isWatching = true;
-      this.error = null;
+      this.error = error.value;
 
       startWatchingPosition(options);
 
-      // Watch for changes in the location ref
       watch(location, (newLocation) => {
         this.location = newLocation;
       });
