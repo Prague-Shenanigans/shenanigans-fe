@@ -274,6 +274,7 @@ defineExpose({
     margin: 1.5rem 0 1rem;
     font-weight: 600;
     color: #1a1a1a;
+    line-height: 1.3;
   }
 
   :deep(h2) {
@@ -281,6 +282,15 @@ defineExpose({
     margin: 1.2rem 0 1rem;
     font-weight: 600;
     color: #1a1a1a;
+    line-height: 1.3;
+  }
+
+  :deep(h3) {
+    font-size: 1.3rem;
+    margin: 1rem 0;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.3;
   }
 
   :deep(p) {
