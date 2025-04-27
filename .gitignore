@@ -31,3 +31,6 @@ Thumbs.db
 android/
 
 package-lock.json
+
+# Ignore Capacitor native build folder
+src-capacitor/
