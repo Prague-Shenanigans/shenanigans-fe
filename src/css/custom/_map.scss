@@ -9,14 +9,16 @@
 
 // Water Features
 .vintage-map .leaflet-tile[src*='water'] {
-  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(180deg) saturate(150%);
+  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(180deg)
+    saturate(150%);
 }
 
 // Parks and Natural Areas
 .vintage-map .leaflet-tile[src*='park'],
 .vintage-map .leaflet-tile[src*='forest'],
 .vintage-map .leaflet-tile[src*='nature_reserve'] {
-  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(90deg) saturate(120%);
+  filter: sepia(30%) contrast(110%) brightness(95%) hue-rotate(90deg)
+    saturate(120%);
 }
 
 // Roads and Streets

@@ -2,7 +2,12 @@
   <div>
     <h1>Reset Your Password</h1>
     <form @submit.prevent="submitEmail">
-      <input v-model="email" type="email" placeholder="Enter your email" required />
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Enter your email"
+        required
+      />
       <button type="submit">Send Reset Link</button>
     </form>
     <p v-if="success">{{ success }}</p>

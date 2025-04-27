@@ -3,7 +3,9 @@
     <h1>Email Confirmation</h1>
     <p v-if="loading">Verifying your email...</p>
     <p v-if="error" class="error">{{ error }}</p>
-    <p v-if="success" class="success">Your email has been verified! You can now log in.</p>
+    <p v-if="success" class="success">
+      Your email has been verified! You can now log in.
+    </p>
   </div>
 </template>
 

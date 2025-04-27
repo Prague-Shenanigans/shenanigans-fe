@@ -10,23 +10,56 @@
         <q-input v-model="user.last_name" label="Last Name" class="q-mb-md" />
         <q-input v-model="user.email" label="Email" readonly class="q-mb-md" />
 
-        <q-btn label="Save Changes" color="primary" :loading="loading" class="q-mt-sm full-width" @click="saveChanges" />
+        <q-btn
+          label="Save Changes"
+          color="primary"
+          :loading="loading"
+          class="q-mt-sm full-width"
+          @click="saveChanges"
+        />
       </q-card-section>
 
       <q-separator spaced />
 
       <q-card-section>
         <div class="text-subtitle2 q-mb-sm">Change Password</div>
-        <q-input v-model="oldPassword" label="Old Password" type="password" class="q-mb-md" />
-        <q-input v-model="newPassword1" label="New Password" type="password" class="q-mb-md" />
-        <q-input v-model="newPassword2" label="Confirm New Password" type="password" class="q-mb-md" />
-        <q-btn label="Change Password" color="secondary" :loading="loading" class="q-mt-sm full-width" @click="changeUserPassword" />
+        <q-input
+          v-model="oldPassword"
+          label="Old Password"
+          type="password"
+          class="q-mb-md"
+        />
+        <q-input
+          v-model="newPassword1"
+          label="New Password"
+          type="password"
+          class="q-mb-md"
+        />
+        <q-input
+          v-model="newPassword2"
+          label="Confirm New Password"
+          type="password"
+          class="q-mb-md"
+        />
+        <q-btn
+          label="Change Password"
+          color="secondary"
+          :loading="loading"
+          class="q-mt-sm full-width"
+          @click="changeUserPassword"
+        />
       </q-card-section>
 
       <q-separator spaced />
 
       <q-card-section>
-        <q-btn label="Delete Account" color="negative" flat class="full-width" @click="confirmDelete" />
+        <q-btn
+          label="Delete Account"
+          color="negative"
+          flat
+          class="full-width"
+          @click="confirmDelete"
+        />
       </q-card-section>
     </q-card>
   </q-page>
@@ -43,7 +76,8 @@ const $q = useQuasar();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const { getCurrentUser, updateUser, changePassword, deleteAccount } = useAuthApi();
+const { getCurrentUser, updateUser, changePassword, deleteAccount } =
+  useAuthApi();
 
 const user = ref({
   first_name: '',

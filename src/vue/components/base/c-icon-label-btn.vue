@@ -43,11 +43,25 @@
     :style="{ padding: `${paddingY} ${paddingX}` }"
   >
     <template v-if="iconPosition === 'left'">
-      <CustomIcon :icon-name="iconName" :color="iconColor" :size="iconSize" class="button__icon--left" />
+      <CustomIcon
+        :icon-name="iconName"
+        :color="iconColor"
+        :size="iconSize"
+        class="button__icon--left"
+      />
     </template>
-    <span :class="{ 'text--bold': bold }" :style="{ fontSize: textSize, color: textColor }">{{ label }}</span>
+    <span
+      :class="{ 'text--bold': bold }"
+      :style="{ fontSize: textSize, color: textColor }"
+      >{{ label }}</span
+    >
     <template v-if="iconPosition === 'right'">
-      <CustomIcon :icon-name="iconName" :color="iconColor" :size="iconSize" class="button__icon--right" />
+      <CustomIcon
+        :icon-name="iconName"
+        :color="iconColor"
+        :size="iconSize"
+        class="button__icon--right"
+      />
     </template>
   </button>
 </template>
@@ -92,7 +106,16 @@ defineProps({
   color: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'txt-blue', 'txt-yellow', 'txt-orange', 'txt-green', 'txt-pink'].includes(value),
+    validator: (value) =>
+      [
+        'primary',
+        'secondary',
+        'txt-blue',
+        'txt-yellow',
+        'txt-orange',
+        'txt-green',
+        'txt-pink',
+      ].includes(value),
   },
   fullWidth: {
     type: Boolean,

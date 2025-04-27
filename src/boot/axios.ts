@@ -34,7 +34,11 @@ api.interceptors.response.use(
   async (error) => {
     const e = error;
     const originalRequest = e.config;
-    if (e.response && e.response.status === 401 && originalRequest.url !== '/logout') {
+    if (
+      e.response &&
+      e.response.status === 401 &&
+      originalRequest.url !== '/logout'
+    ) {
       await useAuthStore().logout();
     }
 

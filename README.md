@@ -13,8 +13,6 @@ iOS:
 quasar build -m capacitor -T ios (only first time needed)
 quasar dev -m capacitor -T ios
 
-
-
 To build for production:
 
 Make sure you have this:

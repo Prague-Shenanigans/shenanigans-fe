@@ -24,8 +24,16 @@
   -->
 
 <template>
-  <button :class="['button', `button--${color}`, { 'button--full-width': fullWidth }]" :disabled="disabled" :style="{ padding: `${paddingY} ${paddingX}` }">
-    <span :class="{ 'text--bold': bold }" :style="{ fontSize: textSize, color: textColor }">{{ label }}</span>
+  <button
+    :class="['button', `button--${color}`, { 'button--full-width': fullWidth }]"
+    :disabled="disabled"
+    :style="{ padding: `${paddingY} ${paddingX}` }"
+  >
+    <span
+      :class="{ 'text--bold': bold }"
+      :style="{ fontSize: textSize, color: textColor }"
+      >{{ label }}</span
+    >
   </button>
 </template>
 
@@ -46,7 +54,16 @@ defineProps({
   color: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'txt-blue', 'txt-yellow', 'txt-orange', 'txt-green', 'txt-pink'].includes(value),
+    validator: (value) =>
+      [
+        'primary',
+        'secondary',
+        'txt-blue',
+        'txt-yellow',
+        'txt-orange',
+        'txt-green',
+        'txt-pink',
+      ].includes(value),
   },
   textColor: {
     type: String,

@@ -1,5 +1,10 @@
 <template>
-  <component :is="iconComponent" v-if="iconComponent" class="custom-icon" :style="{ width: size, height: size, fill: color }" />
+  <component
+    :is="iconComponent"
+    v-if="iconComponent"
+    class="custom-icon"
+    :style="{ width: size, height: size, fill: color }"
+  />
 </template>
 
 <script setup>

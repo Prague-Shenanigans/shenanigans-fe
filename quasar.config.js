@@ -76,7 +76,17 @@ module.exports = configure((ctx) => ({
 
   framework: {
     config: {},
-    plugins: ['Notify', 'Dialog', 'LocalStorage', 'Loading', 'Cookies', 'Meta', 'Dark', 'Screen', 'Platform'],
+    plugins: [
+      'Notify',
+      'Dialog',
+      'LocalStorage',
+      'Loading',
+      'Cookies',
+      'Meta',
+      'Dark',
+      'Screen',
+      'Platform',
+    ],
   },
 
   animations: [],
@@ -103,11 +113,15 @@ module.exports = configure((ctx) => ({
   // Add location permissions
   extrasCapacitor: {
     android: {
-      permissions: ['android.permission.ACCESS_FINE_LOCATION', 'android.permission.ACCESS_COARSE_LOCATION'],
+      permissions: [
+        'android.permission.ACCESS_FINE_LOCATION',
+        'android.permission.ACCESS_COARSE_LOCATION',
+      ],
     },
     ios: {
       plist: {
-        NSLocationWhenInUseUsageDescription: 'This app needs your location to show your position on the map and provide navigation.',
+        NSLocationWhenInUseUsageDescription:
+          'This app needs your location to show your position on the map and provide navigation.',
       },
     },
   },

@@ -6,19 +6,43 @@
           <div class="header-top">
             <h3>{{ poi.title }}</h3>
             <div class="actions-column">
-              <q-btn round flat color="primary" icon="directions" class="action-btn" @click="handleNavigate">
+              <q-btn
+                round
+                flat
+                color="primary"
+                icon="directions"
+                class="action-btn"
+                @click="handleNavigate"
+              >
                 <q-tooltip>Get directions</q-tooltip>
               </q-btn>
-              <q-btn round flat color="secondary" icon="bookmark" class="action-btn" @click="handleSaveToTrip">
+              <q-btn
+                round
+                flat
+                color="secondary"
+                icon="bookmark"
+                class="action-btn"
+                @click="handleSaveToTrip"
+              >
                 <q-tooltip>Save to trip</q-tooltip>
               </q-btn>
-              <q-btn round flat color="primary" icon="share" class="action-btn" @click="handleShare">
+              <q-btn
+                round
+                flat
+                color="primary"
+                icon="share"
+                class="action-btn"
+                @click="handleShare"
+              >
                 <q-tooltip>Share</q-tooltip>
               </q-btn>
             </div>
           </div>
           <p class="description">{{ poi.description }}</p>
-          <div v-if="poi.category && poi.category.length" class="tags-container">
+          <div
+            v-if="poi.category && poi.category.length"
+            class="tags-container"
+          >
             <div class="tags-list">
               <div v-for="cat in poi.category" :key="cat.id" class="tag">
                 {{ cat.name }}
@@ -44,7 +68,10 @@
               <q-icon name="schedule" />
               <span>{{ poi.opening_hours }}</span>
             </div>
-            <div v-if="poi.tags && poi.tags.length" class="detail-item tags-row">
+            <div
+              v-if="poi.tags && poi.tags.length"
+              class="detail-item tags-row"
+            >
               <div class="tags-list">
                 <div v-for="tag in poi.tags" :key="tag.id" class="tag">
                   {{ tag.name }}
@@ -75,7 +102,12 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['close', 'get-directions', 'save-to-trip', 'center-map']);
+const emit = defineEmits([
+  'close',
+  'get-directions',
+  'save-to-trip',
+  'center-map',
+]);
 const panelRef = ref(null);
 const isChangingPoi = ref(false);
 const locationStore = useLocationStore();

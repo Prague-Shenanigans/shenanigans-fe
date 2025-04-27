@@ -24,7 +24,24 @@ function renderMarkdown() {
 
   // Sanitize the HTML content
   const sanitizedContent = DOMPurify.sanitize(htmlContent, {
-    ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'strong', 'em', 'br'],
+    ALLOWED_TAGS: [
+      'p',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'ul',
+      'ol',
+      'li',
+      'a',
+      'blockquote',
+      'code',
+      'strong',
+      'em',
+      'br',
+    ],
     ALLOWED_ATTR: ['href', 'target', 'rel'],
   });
 

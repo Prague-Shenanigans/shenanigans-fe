@@ -7,8 +7,12 @@ import { LocalStorage } from 'quasar';
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter();
 
-  const accessToken = ref<string | null>(LocalStorage.getItem('accessToken') || null);
-  const refreshToken = ref<string | null>(LocalStorage.getItem('refreshToken') || null);
+  const accessToken = ref<string | null>(
+    LocalStorage.getItem('accessToken') || null,
+  );
+  const refreshToken = ref<string | null>(
+    LocalStorage.getItem('refreshToken') || null,
+  );
   const user = ref<any>(null); // You can type this if you know your user shape
   const loading = ref(false);
   const error = ref<string | null>(null);
@@ -39,11 +43,14 @@ export const useAuthStore = defineStore('auth', () => {
     if (!accessToken.value) return;
 
     try {
-      const response = await axios.get('https://she-be.nonode.dev/api/auth/user/', {
-        headers: {
-          Authorization: `Bearer ${accessToken.value}`,
+      const response = await axios.get(
+        'https://she-be.nonode.dev/api/auth/user/',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken.value}`,
+          },
         },
-      });
+      );
       user.value = response.data;
     } catch (err: any) {
       console.error('Failed to fetch user:', err);

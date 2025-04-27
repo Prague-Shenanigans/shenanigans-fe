@@ -6,7 +6,16 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="email" label="Email" type="email" filled dense class="q-mb-md" :error="!!errorX" :error-message="errorX" />
+        <q-input
+          v-model="email"
+          label="Email"
+          type="email"
+          filled
+          dense
+          class="q-mb-md"
+          :error="!!errorX"
+          :error-message="errorX"
+        />
 
         <q-input
           v-model="password"
@@ -19,9 +28,21 @@
           @click:append="showPassword = !showPassword"
         />
 
-        <q-btn label="Login" color="primary" class="full-width q-mt-md" :loading="loading" @click="login" />
+        <q-btn
+          label="Login"
+          color="primary"
+          class="full-width q-mt-md"
+          :loading="loading"
+          @click="login"
+        />
 
-        <q-btn flat dense class="full-width q-mt-sm" to="/auth/register" label="Don't have an account? Register" />
+        <q-btn
+          flat
+          dense
+          class="full-width q-mt-sm"
+          to="/auth/register"
+          label="Don't have an account? Register"
+        />
       </q-card-section>
     </q-card>
   </q-page>

@@ -37,7 +37,8 @@ const screenHeight = window.innerHeight;
 
 function setTranslate(y, animate = true) {
   if (animate) {
-    panel.value.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)';
+    panel.value.style.transition =
+      'transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)';
   } else {
     panel.value.style.transition = 'none';
   }

@@ -1,11 +1,15 @@
 <template>
   <button
     class="c-btn"
-    :class="[`c-btn--${variant}`, dense ? `c-btn--dense` : '', rightIcon ? 'text-left row' : 'text-center']"
+    :class="[
+      `c-btn--${variant}`,
+      dense ? `c-btn--dense` : '',
+      rightIcon ? 'text-left row' : 'text-center',
+    ]"
     type="button"
     :style="[color ? `color: ${color} !important` : '']"
     :disabled="disable"
-    @click.stop="ev => $emit('click', ev)"
+    @click.stop="(ev) => $emit('click', ev)"
   >
     <span v-if="label">{{ label }}</span>
     <template v-if="rightIcon">
@@ -16,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-
 defineProps({
   label: {
     type: String,
@@ -29,7 +32,7 @@ defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator(value : string) {
+    validator(value: string) {
       return ['primary', 'secondary', 'error'].includes(value);
     },
   },

@@ -2,7 +2,12 @@
   <div ref="panelRef" class="dynamic-panel" :class="`state-${currentState}`">
     <div class="panel-content">
       <!-- Header Section -->
-      <div class="panel-header" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+      <div
+        class="panel-header"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
+      >
         <div class="drag-handle"></div>
         <slot name="header">
           <div class="default-header">
@@ -12,7 +17,14 @@
       </div>
 
       <!-- Primary Content Section -->
-      <div ref="primaryRef" class="panel-primary" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+      <div
+        ref="primaryRef"
+        class="panel-primary"
+        @scroll="handleScroll"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
+      >
         <slot name="primary">
           <div class="default-primary">Primary Content</div>
         </slot>

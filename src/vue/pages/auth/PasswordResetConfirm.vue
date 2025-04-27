@@ -2,8 +2,18 @@
   <div>
     <h1>Set New Password</h1>
     <form @submit.prevent="submitPassword">
-      <input v-model="newPassword" type="password" placeholder="New Password" required />
-      <input v-model="confirmPassword" type="password" placeholder="Confirm Password" required />
+      <input
+        v-model="newPassword"
+        type="password"
+        placeholder="New Password"
+        required
+      />
+      <input
+        v-model="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        required
+      />
       <button type="submit">Reset Password</button>
     </form>
     <p v-if="success">{{ success }}</p>
