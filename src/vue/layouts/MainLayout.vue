@@ -3,7 +3,13 @@
     <!-- ===================== HEADER ===================== -->
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+        />
         <q-toolbar-title>Prague Shenanigans</q-toolbar-title>
         <q-btn flat dense icon="logout" @click="logout" />
       </q-toolbar>
@@ -26,19 +32,31 @@
 
     <!-- ===================== PAGE CONTAINER ===================== -->
     <q-page-container class="page-container">
-      <router-view />
+      <router-view v-if="isAuthenticated" />
+      <div v-else class="auth-redirect">
+        <q-spinner color="primary" size="3em" />
+        <p>Redirecting to login...</p>
+      </div>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/auth.store';
+import { routeNames } from 'src/router/routes';
 
 const leftDrawerOpen = ref(false);
 const router = useRouter();
 const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.isAuthenticated());
+
+onMounted(() => {
+  if (!isAuthenticated.value) {
+    router.push({ name: routeNames.signIn });
+  }
+});
 
 const logout = () => {
   authStore.logout();
@@ -57,5 +75,14 @@ const logout = () => {
   height: 100%; // Subtract header height
   overflow: hidden;
   overflow-y: auto;
+}
+
+.auth-redirect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 </style>
