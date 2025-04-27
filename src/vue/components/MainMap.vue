@@ -23,7 +23,7 @@
 <script setup lang="ts">
 // ===================== IMPORTS =====================
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { MarkerOptions } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Feature, LineString } from 'geojson';
 import { QBtn, QTooltip } from 'quasar';
@@ -56,16 +56,15 @@ function centerOnUser() {
       const lng = position.coords.longitude;
       const lat = position.coords.latitude;
 
-      mapInstance.value?.flyTo({ center: [lng, lat], zoom: 14 });
+      mapInstance.value!.flyTo({ center: [lng, lat], zoom: 14 });
 
       if (userMarker.value) {
         userMarker.value.setLngLat([lng, lat]);
       } else {
-        userMarker.value = new mapboxgl.Marker({
-          color: '#4285f4',
-        } as unknown as mapboxgl.MarkerOptions)
+        const markerOptions: Partial<MarkerOptions> = { color: '#4285f4' };
+        userMarker.value = new mapboxgl.Marker(markerOptions)
           .setLngLat([lng, lat])
-          .addTo(mapInstance.value);
+          .addTo(mapInstance.value!);
       }
     },
     (error) => {
@@ -126,7 +125,7 @@ function addPOIMarkers() {
     if (mapInstance.value) {
       const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([poi.longitude, poi.latitude])
-        .addTo(mapInstance.value);
+        .addTo(mapInstance.value!);
 
       marker.getElement().addEventListener('click', () => {
         handleMarkerSelect(poi);
@@ -228,8 +227,8 @@ onMounted(() => {
 
   mapInstance.value.on('load', () => {
     loadPoisForCurrentView();
-    mapInstance.value?.on('moveend', loadPoisForCurrentView);
-    mapInstance.value?.on('zoomend', loadPoisForCurrentView);
+    mapInstance.value!.on('moveend', loadPoisForCurrentView);
+    mapInstance.value!.on('zoomend', loadPoisForCurrentView);
   });
 });
 
