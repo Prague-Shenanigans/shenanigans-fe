@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <h1>Prague Shenanigans</h1>
-    <p>If you can see this, the ap loading correctly!</p>
+    <p>If you can see this, the loading correctly!</p>
     <MainMap />
   </div>
 </template>
