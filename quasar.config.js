@@ -14,11 +14,11 @@ module.exports = configure((ctx) => ({
 
   build: {
     target: {
-      browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
+      browser: ['es2020'],
       node: 'node20',
     },
     vueRouterMode: 'history',
-    publicPath: '', // ✅ important for Capacitor to load fonts/assets
+    publicPath: '',
     vitePlugins: [
       [
         '@intlify/vite-plugin-vue-i18n',
@@ -41,6 +41,17 @@ module.exports = configure((ctx) => ({
       ],
       svgLoader(),
     ],
+    viteVuePluginOptions: {},
+    viteExtendConfig(viteConf, { isServer, isClient }) {
+      viteConf.optimizeDeps = viteConf.optimizeDeps || {};
+      viteConf.optimizeDeps.exclude = ['mapbox-gl'];
+
+      viteConf.build = viteConf.build || {};
+      viteConf.build.target = 'es2020';
+
+      viteConf.esbuild = viteConf.esbuild || {};
+      viteConf.esbuild.target = 'es2020';
+    },
   },
 
   devServer: {

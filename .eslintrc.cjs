@@ -11,44 +11,46 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:vue/vue3-recommended', // ✅ More strict than "vue3-essential"
+    'plugin:vue/vue3-recommended',
     'airbnb-base',
-    'prettier' // ✅ Ensure Prettier and ESLint don't conflict
+    'prettier', // disables conflicting ESLint formatting rules
   ],
-
-  plugins: ['@typescript-eslint', 'vue'],
-
+  plugins: ['@typescript-eslint', 'vue', 'prettier'],
   rules: {
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        semi: true,
+        trailingComma: 'all',
+      },
+    ],
+
+    // Other rules
     'no-plusplus': 'off',
     'no-param-reassign': 'off',
     'no-void': 'off',
     'no-nested-ternary': 'off',
     'max-classes-per-file': 'off',
-    'comma-dangle': 'warn',
-    'semi': ['warn', 'always'],
-    'linebreak-style': 0,
+    'semi': ['error', 'always'],
+    'quotes': ['error', 'single', { avoidEscape: true }],
+    'comma-dangle': ['error', 'always-multiline'],
+    'linebreak-style': 'off',
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
-
     '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
-
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
     'import/extensions': 'off',
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
-    'max-len': ['warn', { code: 180 }],
     'arrow-parens': 'off',
-
     'prefer-promise-reject-errors': 'off',
-
-    'quotes': ['warn', 'single', { avoidEscape: true }],
-
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-var-requires': 'off',
     'no-unused-vars': 'off',
+    'max-len': ['warn', { code: 180 }],
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-console': 'off',
-
     'vue/attributes-order': [
       'error',
       {
@@ -63,12 +65,11 @@ module.exports = {
           'OTHER_DIRECTIVES',
           'OTHER_ATTR',
           'EVENTS',
-          'CONTENT'
+          'CONTENT',
         ],
         alphabetical: false,
       },
     ],
   },
-
   ignorePatterns: ['**/www/**', '**/public/**', 'dist/', 'node_modules/'],
 };

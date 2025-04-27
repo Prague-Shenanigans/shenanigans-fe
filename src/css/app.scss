@@ -1,8 +1,7 @@
 // app global css in SCSS form
 
-@import 'colors.variables';
-@import 'layouts';
-@import 'btns';
-@import 'margins-paddings';
-@import 'flex-utilities';
-@import 'leaflet/dist/leaflet.css';
+@import './quasar.variables.scss';
+@import './custom/main.scss';
+@import './custom/base.scss';
+@import './custom/map.scss';
+@import './custom/panel.scss';
