@@ -1,6 +1,6 @@
 // src/services/api-request.js
 import axios from 'axios';
-import { LocalStorage, Loading, Dialog, Notify } from 'quasar';
+import { LocalStorage, Dialog, Notify } from 'quasar';
 
 // Environment detection using Quasar's MODE
 const isDevelopment = process.env.MODE === 'spa';
@@ -33,24 +33,24 @@ const instance = axios.create({
 
 // Request interceptor
 instance.interceptors.request.use(
-  (config) => {
-    const token = LocalStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (
+    config, // ✅ No block, immediate return
+  ) =>
+    LocalStorage.getItem('accessToken')
+      ? {
+          ...config,
+          headers: {
+            ...config.headers,
+            Authorization: `Bearer ${LocalStorage.getItem('accessToken')}`,
+          },
+        }
+      : config,
+  (error) => Promise.reject(error), // ✅ No block, immediate return
 );
 
 // Response interceptor
 instance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response, // ✅ No block, immediate return
   async (error) => {
     let errorMessage = 'An unknown error occurred. Please try again.';
 
@@ -59,9 +59,7 @@ instance.interceptors.response.use(
 
       // Handle token expiration
       if (status === 401) {
-        // Clear invalid token
         LocalStorage.remove('accessToken');
-        // Redirect to login
         window.location.href = '/auth/login';
         return Promise.reject(
           new Error('Session expired. Please login again.'),
@@ -87,7 +85,6 @@ instance.interceptors.response.use(
       errorMessage = error.message;
     }
 
-    // Only show error dialog in web environment
     if (!isCapacitor) {
       Dialog.create({
         title: 'Error',
@@ -96,7 +93,6 @@ instance.interceptors.response.use(
       });
     }
 
-    // Show notification in both environments
     Notify.create({
       type: 'negative',
       message: errorMessage,
