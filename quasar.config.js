@@ -18,7 +18,7 @@ module.exports = configure((ctx) => ({
       node: 'node20',
     },
     vueRouterMode: 'history',
-    publicPath: '',
+    publicPath: '/', // EDITED FOR NETLIFY TO WORK?
     vitePlugins: [
       [
         '@intlify/vite-plugin-vue-i18n',
