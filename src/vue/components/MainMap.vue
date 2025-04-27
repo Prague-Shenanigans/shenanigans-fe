@@ -1,143 +1,274 @@
 <template>
   <div class="map-wrapper">
-    <div ref="mapRef" class="map-container"></div>
+    <div ref="mapContainer" class="map-container"></div>
 
-    <div class="map-control">
-      <select v-model="selectedProvider" @change="updateTileLayer">
-        <option v-for="(provider, key) in tileProviders" :key="key" :value="provider.name">
-          {{ provider.label }}
-        </option>
-      </select>
+    <div class="location-control">
+      <q-btn round flat color="grey" icon="my_location" @click="centerOnUser">
+        <q-tooltip>Get my location</q-tooltip>
+      </q-btn>
     </div>
+
+    <PoisPanel
+      v-if="selectedPoi"
+      ref="poisPanelRef"
+      :poi="selectedPoi"
+      @close="handlePanelClose"
+      @get-directions="handleGetDirections"
+      @save-to-trip="handleSaveToTrip"
+      @center-map="handleCenterMap"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 // ===================== IMPORTS =====================
-import { onMounted, ref, onUnmounted, watch } from 'vue';
-import L from 'leaflet';
-import 'leaflet-providers';
-import { tileProviders } from '../../maps/tiles/tileProviders.js';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import type { Feature, LineString } from 'geojson';
+import { QBtn, QTooltip } from 'quasar';
 import { usePoisStore } from '../../stores/pois.store';
+import { useLocationStore } from '../../stores/location';
+import PoisPanel from './Panels/PoisPanel.vue';
 
 // ===================== VARIABLES =====================
-const mapRef = ref(null);
-const map = ref(null);
-const tileLayer = ref(null);
-const markers = ref([]);
-const selectedProvider = ref(tileProviders.osm.name);
+const mapContainer = ref<HTMLDivElement | null>(null);
+const mapInstance = ref<mapboxgl.Map | null>(null);
+const userMarker = ref<mapboxgl.Marker | null>(null);
+const poisPanelRef = ref<any>(null);
+const poiMarkers = ref<mapboxgl.Marker[]>([]);
+const selectedPoi = ref<any>(null);
+const routeLayerId = 'route-layer';
+
 const poisStore = usePoisStore();
-let mapMoveTimeout: number | null = null;
+const locationStore = useLocationStore();
+
+const { VITE_MAPBOX_TOKEN } = import.meta.env;
+
+mapboxgl.accessToken = VITE_MAPBOX_TOKEN;
 
 // ===================== METHODS =====================
-function updateTileLayer() {
-  if (!map.value) return;
+function centerOnUser() {
+  if (!navigator.geolocation || !mapInstance.value) return;
 
-  if (tileLayer.value) {
-    map.value.removeLayer(tileLayer.value);
-  }
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lng = position.coords.longitude;
+      const lat = position.coords.latitude;
 
-  const providerName = selectedProvider.value;
-  tileLayer.value = L.tileLayer.provider(providerName);
-  tileLayer.value.addTo(map.value);
+      mapInstance.value?.flyTo({ center: [lng, lat], zoom: 14 });
+
+      if (userMarker.value) {
+        userMarker.value.setLngLat([lng, lat]);
+      } else {
+        userMarker.value = new mapboxgl.Marker({
+          color: '#4285f4',
+        } as unknown as mapboxgl.MarkerOptions)
+          .setLngLat([lng, lat])
+          .addTo(mapInstance.value);
+      }
+    },
+    (error) => {
+      console.error('Error getting user location:', error);
+    },
+  );
 }
 
-function clearMarkers() {
-  markers.value.forEach((marker) => marker.remove());
-  markers.value = [];
+const loadPoisForCurrentView = () => {
+  if (!mapInstance.value) return;
+
+  const bounds = mapInstance.value.getBounds();
+  const zoom = mapInstance.value.getZoom();
+
+  poisStore.loadPois(
+    {
+      getNorth: () => bounds.getNorth(),
+      getSouth: () => bounds.getSouth(),
+      getEast: () => bounds.getEast(),
+      getWest: () => bounds.getWest(),
+      getCenter: () => ({
+        lat: bounds.getCenter().lat,
+        lng: bounds.getCenter().lng,
+      }),
+    },
+    zoom,
+  );
+};
+
+function handleMarkerSelect(poi: any) {
+  selectedPoi.value = poi;
+  setTimeout(() => {
+    poisPanelRef.value?.setCurrentState(1);
+  }, 50);
 }
 
-function updateMarkers() {
-  clearMarkers();
+function addPOIMarkers() {
+  poiMarkers.value.forEach((marker) => marker.remove());
+  poiMarkers.value = [];
 
   poisStore.visiblePois.forEach((poi) => {
-    const marker = L.marker([poi.latitude, poi.longitude])
-      .bindPopup(
-        `
-        <h3>${poi.title}</h3>
-        <p>${poi.description}</p>
-        <div class="poi-tags">
-          ${poi.tags.map((tag) => `<span class="tag">${tag}</span>`).join(' ')}
-        </div>
-      `,
-      )
-      .addTo(map.value);
+    const el = document.createElement('div');
+    el.className = 'poi-marker';
 
-    markers.value.push(marker);
+    if (poi.icon_url) {
+      el.style.backgroundImage = `url('${poi.icon_url}')`;
+      el.style.backgroundSize = 'contain';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.width = '50px';
+      el.style.height = '50px';
+    } else {
+      el.style.backgroundColor = '#4285f4';
+      el.style.borderRadius = '50%';
+      el.style.width = '36px';
+      el.style.height = '36px';
+    }
+
+    if (mapInstance.value) {
+      const marker = new mapboxgl.Marker({ element: el })
+        .setLngLat([poi.longitude, poi.latitude])
+        .addTo(mapInstance.value);
+
+      marker.getElement().addEventListener('click', () => {
+        handleMarkerSelect(poi);
+      });
+
+      poiMarkers.value.push(marker);
+    }
   });
 }
 
-function handleMapMove() {
-  if (!map.value) return;
-
-  const bounds = map.value.getBounds();
-  const zoom = map.value.getZoom();
-
-  // Debounce the API call
-  if (mapMoveTimeout) {
-    clearTimeout(mapMoveTimeout);
-  }
-
-  mapMoveTimeout = window.setTimeout(() => {
-    poisStore.loadPois(bounds, zoom);
-  }, 500);
+function handlePanelClose() {
+  poisPanelRef.value?.setCurrentState(0);
+  setTimeout(() => {
+    selectedPoi.value = null;
+  }, 300);
 }
 
-// ===================== LIFECYCLE HOOKS =====================
-onMounted(() => {
-  if (mapRef.value) {
-    map.value = L.map(mapRef.value).setView([50.0755, 14.4378], 13);
-    updateTileLayer();
+function handleSaveToTrip(poi: any) {
+  console.log('Saving to trip:', poi.title);
+}
 
-    // Add event listeners
-    map.value.on('moveend', handleMapMove);
-    map.value.on('zoomend', handleMapMove);
+function handleGetDirections(routeData: any) {
+  if (!mapInstance.value || !routeData.coordinates) return;
 
-    // Initial load
-    handleMapMove();
+  if (mapInstance.value.getSource(routeLayerId)) {
+    mapInstance.value.removeLayer(routeLayerId);
+    mapInstance.value.removeSource(routeLayerId);
   }
+
+  const geojson: Feature<LineString> = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: routeData.coordinates.map((coord: any) => [
+        coord.lng,
+        coord.lat,
+      ]),
+    },
+  };
+
+  mapInstance.value.addSource(routeLayerId, {
+    type: 'geojson',
+    data: geojson,
+  });
+
+  mapInstance.value.addLayer({
+    id: routeLayerId,
+    type: 'line',
+    source: routeLayerId,
+    layout: {
+      'line-cap': 'round',
+      'line-join': 'round',
+    },
+    paint: {
+      'line-color': '#4285f4',
+      'line-width': 4,
+      'line-dasharray': [2, 4],
+    },
+  });
+
+  if (routeData.bounds) {
+    mapInstance.value.fitBounds(
+      [
+        [routeData.bounds._southWest.lng, routeData.bounds._southWest.lat],
+        [routeData.bounds._northEast.lng, routeData.bounds._northEast.lat],
+      ],
+      { padding: 50 },
+    );
+  }
+}
+
+function handleCenterMap(routeData: any) {
+  if (!mapInstance.value) return;
+
+  mapInstance.value.flyTo({
+    center: [routeData.lng, routeData.lat],
+    zoom: 14,
+  });
+}
+
+// ===================== WATCHERS =====================
+watch(() => poisStore.visiblePois, addPOIMarkers);
+
+// ===================== LIFECYCLE =====================
+onMounted(() => {
+  if (!mapContainer.value) return;
+
+  mapInstance.value = new mapboxgl.Map({
+    container: mapContainer.value,
+    style: 'mapbox://styles/pavelios/cm98f1xwb00gn01pga6fd3plv?optimize=true',
+    center: [14.4378, 50.0755],
+    zoom: 13,
+    pitch: 60,
+    bearing: -17.6,
+  });
+
+  mapInstance.value.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+  mapInstance.value.on('load', () => {
+    loadPoisForCurrentView();
+    mapInstance.value?.on('moveend', loadPoisForCurrentView);
+    mapInstance.value?.on('zoomend', loadPoisForCurrentView);
+  });
 });
 
 onUnmounted(() => {
-  if (map.value) {
-    map.value.remove();
-    clearMarkers();
+  if (mapInstance.value) {
+    mapInstance.value.off('moveend', loadPoisForCurrentView);
+    mapInstance.value.off('zoomend', loadPoisForCurrentView);
+    mapInstance.value.remove();
   }
-  if (mapMoveTimeout) {
-    clearTimeout(mapMoveTimeout);
-  }
+  poiMarkers.value.forEach((marker) => marker.remove());
 });
-
-// Watch for changes in visible POIs
-watch(() => poisStore.visiblePois, updateMarkers);
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .map-wrapper {
   position: relative;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
 }
 
 .map-container {
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
-.map-control {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+.location-control {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   z-index: 1000;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 4px;
 }
 
-.map-control select {
-  border: none;
-  background: transparent;
-  font-size: 14px;
+.poi-marker {
+  cursor: pointer;
+  background-color: #4285f4;
+  border-radius: 50%;
 }
 </style>

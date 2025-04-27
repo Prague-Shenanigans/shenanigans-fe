@@ -1,11 +1,11 @@
 <template>
   <div class="home-page">
-    <CustomMap />
+    <MainMap />
   </div>
 </template>
 
 <script setup>
-import CustomMap from '../components/CustomMap.vue';
+import MainMap from '../components/MainMap.vue';
 </script>
 
 <style lang="scss" scoped>
