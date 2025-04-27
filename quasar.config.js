@@ -9,7 +9,6 @@ module.exports = configure((ctx) => ({
 
   css: ['app.scss'],
 
-  // ✅ Merge your icon fonts here
   extras: ['roboto-font', 'material-icons', 'material-icons-outlined'],
 
   build: {
@@ -18,7 +17,7 @@ module.exports = configure((ctx) => ({
       node: 'node20',
     },
     vueRouterMode: 'history',
-    publicPath: '/', // EDITED FOR NETLIFY TO WORK?
+    publicPath: '/', // For Netlify to work properly
     vitePlugins: [
       [
         '@intlify/vite-plugin-vue-i18n',
@@ -51,6 +50,13 @@ module.exports = configure((ctx) => ({
 
       viteConf.esbuild = viteConf.esbuild || {};
       viteConf.esbuild.target = 'es2020';
+
+      // ✅ Externalize Capacitor plugins for Web builds (Netlify)
+      viteConf.build.rollupOptions = viteConf.build.rollupOptions || {};
+      viteConf.build.rollupOptions.external = [
+        '@capacitor/core',
+        '@capacitor/geolocation',
+      ];
     },
   },
 
@@ -110,7 +116,6 @@ module.exports = configure((ctx) => ({
     hideSplashscreen: true,
   },
 
-  // Add location permissions
   extrasCapacitor: {
     android: {
       permissions: [

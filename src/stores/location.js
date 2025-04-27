@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { Geolocation } from '@capacitor/geolocation';
+import { Platform } from 'quasar'; // ✅ Use Quasar to detect if running on Capacitor
 
 export const useLocationStore = defineStore('location', () => {
   const position = ref(null);
@@ -19,11 +19,23 @@ export const useLocationStore = defineStore('location', () => {
     try {
       isLoading.value = true;
       error.value = null;
-      const positionData = await Geolocation.getCurrentPosition();
+
+      let positionData;
+
+      if (Platform.is.capacitor) {
+        const { Geolocation } = await import('@capacitor/geolocation'); // ✅ Dynamic import
+        positionData = await Geolocation.getCurrentPosition();
+      } else {
+        // ✅ Web browser geolocation
+        positionData = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+      }
+
       position.value = positionData;
       return positionData;
     } catch (err) {
-      error.value = err.message;
+      error.value = err.message || 'Unknown error';
       throw err;
     } finally {
       isLoading.value = false;
