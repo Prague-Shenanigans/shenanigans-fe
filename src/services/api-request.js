@@ -39,11 +39,9 @@ instance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    Loading.show({ message: 'Loading...' });
     return config;
   },
   (error) => {
-    Loading.hide();
     return Promise.reject(error);
   },
 );
@@ -51,11 +49,9 @@ instance.interceptors.request.use(
 // Response interceptor
 instance.interceptors.response.use(
   (response) => {
-    Loading.hide();
     return response;
   },
   async (error) => {
-    Loading.hide();
     let errorMessage = 'An unknown error occurred. Please try again.';
 
     if (axios.isAxiosError(error)) {
