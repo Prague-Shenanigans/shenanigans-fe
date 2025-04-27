@@ -2,6 +2,7 @@
 
 module.exports = {
   plugins: [
+    require('postcss-combine-media-query'),
     require('autoprefixer')({
       overrideBrowserslist: [
         'last 4 Chrome versions',
