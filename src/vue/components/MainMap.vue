@@ -20,9 +20,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// @ts-nocheck
-
+<script setup lang="js">
 // ===================== IMPORTS =====================
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import mapboxgl from 'mapbox-gl';
